@@ -114,7 +114,7 @@ Everything else checks out exactly, and the figure parameters reproduce every fi
 | Presets | A drop-down: the paper's Figs 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8 and 4.10 (4.9 and 4.11 plot the same orbits against λ) and 4.12. Also "Equal spins (a = b)", where every orbit's radius depends only on Φ + Ψ, and "No spin", the Tangherlini case, where every orbit is a great circle with r = √2. Each preset sets a, b, Φ, Ψ, the trail length, the starting point, the colours and the camera, fitted to the figure's image ([research/scripts/presets/](research/scripts/presets/)). Any change of the visitor's own shows "Custom". Reset puts the photon back where the last preset started it. |
 | Opening state | Fig 4.5's orbit, moment, colours and viewpoint, with three oscillations of trail rather than the figure's 27 (Mark, 2026-11-20). The drop-down shows Fig 4.5. |
 | 3D view | Drag to rotate. Zoom with buttons and pinch, while the mouse wheel keeps scrolling the page. A "Reset view" button. |
-| Side panel | θ, φ and ψ against λ over the visible trail, as in Figs 4.9 and 4.11. A cursor marks the photon, and dashed lines mark the band's edges, θ₋ and θ₊. φ and ψ are unwrapped, as in the paper. A second tab shows the (φ, ψ) torus: a square in which the path wraps around. It shows ψ without colour and makes quasiperiodicity visible. |
+| Side panel | θ, φ and ψ against λ over the visible trail, as in Figs 4.9 and 4.11: three rows sharing the λ axis, with the photon marked at the right-hand end. Dashed lines mark the band's edges, θ₋ and θ₊. φ and ψ are unwrapped, as in the paper, and a band under ψ shows the trail's colour at each λ. Through an axis, θ, φ and ψ run on smoothly in the 3D view's signed coordinates (step 4). A second tab shows the (φ, ψ) torus: a square in which the path wraps around. It shows ψ without colour and makes quasiperiodicity visible. |
 | Readouts | The status line gives r, the θ band and the advance per oscillation in turns, for example "r = 1.32 · θ from 37.6° to 51.5° · per swing: φ +0.34 turns, ψ −0.61 turns". If the dot ever lands outside the region, it says "No spherical orbit for these momenta". |
 | Copy | Plain. "How this works" is drafted for Mark to rewrite: on the site, Mark writes the English copy himself. |
 
@@ -243,9 +243,29 @@ pyproject.toml         a uv project; commit uv.lock
 - [x] The colour legend ring, top left of the 3D view, with a marker at the photon's ψ.
 - [x] Checked in Edge, with no console errors: standalone and embedded with `--dk-fit-height`, both themes, phone width; dragging, snapping, the sliders' stops, the keys, the spins' memory, the extremal hold, presets and Reset. On a phone, a drag on the pad moves the dot and doesn't scroll the page. Moving a spin slider redraws the pad in about 16 ms; the longest trail near the extremal edge plays at 60 frames a second.
 
-### 4. Side panel (PR)
-- [ ] The θ, φ, ψ strip against λ. The (φ, ψ) torus tab.
-- [ ] On wide frames, the panel sits beside the 3D view; on phones, below it or folded away.
+### 4. Side panel (PR, then release `v0.4.0`)
+- [x] The θ, φ, ψ strip against λ (`demo/src/panel/strip.js`):
+  - three rows sharing the λ axis, over the visible trail, with the photon at the right-hand end;
+  - θ on a fixed scale, 0 to π/2, with dashed lines at the band's edges θ₋ and θ₊;
+  - φ and ψ unwrapped, each row fitted to its stretch, with plain numbers on the axes as in the paper;
+  - a band under ψ showing the trail's colour at each λ.
+
+  The demo's λ is 0 at θ_min, and its φ is 0 there too. The axes read λ − λ₀, φ + φ₀ and ψ + ψ₀, where λ₀ and φ₀ come from the presets of Figs 4.8 and 4.10, fitted to Figs 4.9 and 4.11, and are 0 for the rest. The 3D view's φ₀ is already in its camera. So the Fig 4.10 preset's panel reproduces Fig 4.11: λ from 1 to 5, the same curves.
+- [x] The (φ, ψ) torus tab (`demo/src/panel/torus.js`). The trail wraps at the edges and fades towards its tail, as the 3D trail does, and the colour wheel runs along the ψ axis.
+- [x] **Through an axis, the curves stay smooth** (Mark, 2026-11-20: "The curves should be smooth, as they are geodesics. Jumps are purely artifacts of coordinate systems"). The panel uses the 3D view's signed coordinates (equations §7):
+  - through the pole, θ swings between −θ₊ and θ₊;
+  - through the equator, θ runs on past π/2 to π − θ₋;
+  - through both (Φ = Ψ = 0, Figs 4.2 and 4.6), θ = χ/2 and grows steadily.
+
+  φ and ψ have no jumps, and ψ always agrees with the trail's colours. The alternative, θ folded into [0, π/2] with φ or ψ jumping by π at each passage, was shown to Mark as pictures and set aside.
+- [x] **Fig 4.8 keeps ψ₀ = 3.683,** so its colours match Fig 4.8, and its panel's ψ is Fig 4.9's curve raised by π. θ and φ match Fig 4.9. (Mark left this to Claude.)
+- [x] **A preset's trail is its exact stretch.** The trail slider rounds the length to its step, 0.01 in log λ, which made Fig 4.10's start λ = 1.02. The exact length now holds until the slider moves.
+- [x] **Layout.** On wide frames the panel sits beside the 3D view and takes 38% of the stage's width, from 15 to 24rem. On phones it goes below the 3D view, 20rem high. The rail is unchanged, so the frame still fits at 1366×657, with the pad at 161 px.
+- [x] **Performance.** The panel walks the refined path through `trace()` in `trail.js`, which shares `fill()`'s window and per-oscillation shifts; nothing is solved again, and nothing is allocated per frame.
+  - Each curve is drawn through at most four values per pixel column.
+  - A trail of more than 20,000 points is visited at an even stride. Near the extremal edge a trail of λ = 300 has about 240,000 (1,024 a period); Fig 4.10's has 18,000, so it is drawn in full.
+  - Measured in Edge, playing at 60 frames a second, the main thread's time per frame, 3D trail included: on Fig 4.10's longest trail, 4.3 ms with the strip and 4.6 ms with the torus; near the extremal edge, 8.8 ms and 10.5 ms.
+- [x] Checked in Edge, with no console errors: standalone and embedded, both themes, phone width; every preset; the tabs' arrow keys; Reset. On a phone, a swipe on the panel scrolls the page, and one on the 3D view turns it.
 
 ### 5. Polish and release (PR, then release `v1.0.0`)
 - [ ] **Accessibility:**
@@ -270,7 +290,7 @@ pyproject.toml         a uv project; commit uv.lock
 
 ## Decisions
 
-Settled with Mark on 2026-11-20. The comparison page, <https://claude.ai/artifact/H3VwXgAEs8gpsK1A31fqcv>, which is private to Mark, showed him the colour wheels and the Ψ = 0 pictures.
+Settled with Mark on 2026-11-20. The comparison page, <https://claude.ai/artifact/H3VwXgAEs8gpsK1A31fqcv>, which is private to Mark, showed him the colour wheels and the Ψ = 0 pictures. For step 4, <https://claude.ai/artifact/5Nqu8jw1oocXfkeszj2eK8>, also private, showed the side panel's two choices.
 
 | Question | Decision |
 | --- | --- |
@@ -285,6 +305,8 @@ Settled with Mark on 2026-11-20. The comparison page, <https://claude.ai/artifac
 | Blue strands | No light edge: blue is dim against the spheroid (1.6–1.7:1) but reads by hue (step 2). |
 | Opening state | Fig 4.5's orbit and viewpoint, with three oscillations of trail (step 3). |
 | The pad's region | Tinted by the orbit's radius (step 3). |
+| The side panel through an axis | Smooth, in the 3D view's signed coordinates: "jumps are purely artifacts of coordinate systems" (step 4). |
+| Fig 4.8's colour offset | Follows Fig 4.8's colours rather than Fig 4.9's ψ curve; Mark left it to Claude (step 4). |
 
 ## Risks
 

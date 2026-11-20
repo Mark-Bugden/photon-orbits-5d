@@ -53,6 +53,7 @@ The presets take the fitted values, with these exceptions:
 - **Fig 4.6** shows two oscillations from the pole, the caption's "one latitudinal oscillation". The fit can't fix the length, since the rest lies behind the spheroid.
 - **Fig 4.10** takes its start and colours from the Fig 4.11 fit, which plots the same stretch against λ: λ from 1 to 5. That start is χ = 4.242 (the 3D fit's is 4.212), and its ψ there is 2.957 (the 3D fit's is 2.978).
 - **Fig 4.12** shows one full turn of φ. The fit only sees the front of the ring.
+- **The side panel** (milestone 4) reads like Figs 4.9 and 4.11 through two more values, from `../fit_figs.out`: λ₀, the demo's λ at the paper's λ = 0, and φ₀, φ at θ_min. Fig 4.10 has λ₀ = 0.7509 and φ₀ = −1.5887, and its ψ₀ already matches Fig 4.11. Fig 4.8 has λ₀ = 0.076 and φ₀ = 1.6122, and keeps the ψ₀ of its own colours, 3.683, so its panel's ψ is Fig 4.9's raised by about π.
 
 ## What the fits show about the figures
 
