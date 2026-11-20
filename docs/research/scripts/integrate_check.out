@@ -1,0 +1,77 @@
+--- Tangherlini: a=0.0 b=0.0 Phi=0.7 Psi=0.9
+    x=2.0000000000 r=1.4142135624 K=4.0000000000 chi''=4.0000
+    theta band predicted [23.695466, 60.565364] deg; Hamiltonian integration [23.695466, 60.565308] deg
+    max|x - x0| over 3 theta-periods (lambda in [0,9.425]) = 7.41e-09; max|H| = 3.46e-12
+    Ham vs Mino-chi: max|dtheta|=4.06e-08 max|dphi|=7.13e-08 max|dpsi|=5.01e-08 max|dt|=5.24e-09
+    Mino period: elliptic K formula 1.5707963268, quadrature 1.5707963268; lambda-period 3.141593
+    per theta-period: dphi=3.141593 dpsi=3.141593 dt=6.283185
+--- Fig4.3 b=0: a=0.5 b=0.0 Phi=2.0 Psi=0.0
+    x=2.7500000000 r=1.6583123952 K=5.7500000000 chi''=5.5000
+    theta band predicted [55.937503, 90.000000] deg; Hamiltonian integration [55.937503, 89.961779] deg
+    max|x - x0| over 3 theta-periods (lambda in [0,11.091]) = 1.16e-08; max|H| = 3.37e-12
+    Ham vs Mino-chi: max|dtheta|=1.88e-08 max|dphi|=1.05e-08 max|dpsi|=0.00e+00 max|dt|=4.21e-09
+    Mino period: elliptic K formula 1.3254912397, quadrature 1.3254912397; lambda-period 3.696987
+    per theta-period: dphi=2.536226 dpsi=0.000000 dt=6.347970
+--- Fig4.7: a=0.6 b=0.3 Phi=1.0 Psi=-1.0
+    x=1.7545565894 r=1.3245967648 K=4.0204300031 chi''=3.3865
+    theta band predicted [37.590804, 51.525617] deg; Hamiltonian integration [37.590804, 51.525597] deg
+    max|x - x0| over 3 theta-periods (lambda in [0,9.057]) = 3.29e-09; max|H| = 2.20e-12
+    Ham vs Mino-chi: max|dtheta|=1.38e-08 max|dphi|=1.46e-08 max|dpsi|=1.53e-08 max|dt|=2.32e-09
+    Mino period: elliptic K formula 1.5236456293, quadrature 1.5236456293; lambda-period 3.019127
+    per theta-period: dphi=2.113327 dpsi=-3.820010 dt=6.123974
+--- Fig4.8 (extremal): a=0.9 b=0.1 Phi=0.8 Psi=0.8
+    x=1.8990390530 r=1.3780562590 K=4.5221721428 chi''=3.9899
+    theta band predicted [22.231909, 66.095707] deg; Hamiltonian integration [22.231909, 66.095616] deg
+    max|x - x0| over 3 theta-periods (lambda in [0,9.799]) = 1.90e-08; max|H| = 1.39e-11
+    Ham vs Mino-chi: max|dtheta|=5.50e-08 max|dphi|=8.96e-08 max|dpsi|=8.91e-08 max|dt|=1.02e-08
+    Mino period: elliptic K formula 1.4118112112, quadrature 1.4118112112; lambda-period 3.266340
+    per theta-period: dphi=1.924896 dpsi=3.364853 dt=6.183856
+--- Fig4.10: a=0.9 b=0.09 Phi=0.1 Psi=0.01
+    x=1.2674228094 r=1.1257987429 K=3.3605701215 chi''=2.5196
+    theta band predicted [2.807399, 89.687364] deg; Hamiltonian integration [2.807399, 89.676433] deg
+    max|x - x0| over 3 theta-periods (lambda in [0,8.102]) = 6.50e-09; max|H| = 2.12e-11
+    Ham vs Mino-chi: max|dtheta|=4.44e-06 max|dphi|=7.47e-06 max|dpsi|=5.45e-04 max|dt|=1.65e-08
+    Mino period: elliptic K formula 1.6221394156, quadrature 1.6221394156; lambda-period 2.700653
+    per theta-period: dphi=1.688610 dpsi=2.920855 dt=5.946941
+--- generic a>b: a=0.55 b=0.2 Phi=-0.6 Psi=0.4
+    x=1.4066988690 r=1.1860433673 K=3.1574289121 chi''=2.8103
+    theta band predicted [19.437123, 76.246456] deg; Hamiltonian integration [19.437123, 76.246296] deg
+    max|x - x0| over 3 theta-periods (lambda in [0,8.138]) = 1.46e-08; max|H| = 1.63e-11
+    Ham vs Mino-chi: max|dtheta|=9.99e-08 max|dphi|=1.38e-07 max|dpsi|=2.76e-07 max|dt|=1.55e-08
+    Mino period: elliptic K formula 1.7278257624, quadrature 1.7278257624; lambda-period 2.712565
+    per theta-period: dphi=-4.134277 dpsi=2.761033 dt=6.168261
+--- generic b>a: a=0.15 b=0.7 Phi=0.9 Psi=-0.6
+    x=1.1960224558 r=1.0936281159 K=2.7620677935 chi''=2.6770
+    theta band predicted [35.526604, 66.185243] deg; Hamiltonian integration [35.526604, 66.185195] deg
+    max|x - x0| over 3 theta-periods (lambda in [0,7.937]) = 4.09e-10; max|H| = 2.09e-12
+    Ham vs Mino-chi: max|dtheta|=3.74e-08 max|dphi|=3.43e-08 max|dpsi|=5.65e-08 max|dt|=5.26e-09
+    Mino period: elliptic K formula 1.7731460722, quadrature 1.7731460722; lambda-period 2.645541
+    per theta-period: dphi=3.176527 dpsi=-4.440477 dt=6.302181
+--- a=b: a=0.4 b=0.4 Phi=1.2 Psi=-0.5
+    x=1.9673544524 r=1.4026241308 K=4.2326849733 chi''=3.9788
+    theta band predicted [36.858196, 72.652915] deg; Hamiltonian integration [36.858196, 72.652838] deg
+    max|x - x0| over 3 theta-periods (lambda in [0,9.566]) = 1.50e-08; max|H| = 2.49e-11
+    Ham vs Mino-chi: max|dtheta|=4.82e-08 max|dphi|=3.20e-08 max|dpsi|=1.17e-07 max|dt|=9.12e-09
+    Mino period: elliptic K formula 1.4989420514, quadrature 1.4989420514; lambda-period 3.188781
+    per theta-period: dphi=2.577388 dpsi=-3.705797 dt=6.189437
+--- negative b: a=0.5 b=-0.3 Phi=0.8 Psi=1.0
+    x=1.6927756435 r=1.3010671172 K=3.7616080182 chi''=3.3134
+    theta band predicted [29.401468, 54.291291] deg; Hamiltonian integration [29.401468, 54.291255] deg
+    max|x - x0| over 3 theta-periods (lambda in [0,8.865]) = 2.35e-09; max|H| = 2.90e-12
+    Ham vs Mino-chi: max|dtheta|=2.70e-08 max|dphi|=3.55e-08 max|dpsi|=2.72e-08 max|dt|=1.86e-09
+    Mino period: elliptic K formula 1.5796235862, quadrature 1.5796235862; lambda-period 2.954966
+    per theta-period: dphi=2.237652 dpsi=3.790348 dt=6.160864
+--- closed 15-osc orbit: a=0.6 b=0.3 Phi=0.1051348934 Psi=-0.135441596
+    x=1.5340870351 r=1.2385826719 K=3.5606258734 chi''=2.9833
+    theta band predicted [3.051132, 85.929600] deg; Hamiltonian integration [3.051132, 85.928971] deg
+    max|x - x0| over 3 theta-periods (lambda in [0,8.518]) = 2.11e-08; max|H| = 1.90e-11
+    Ham vs Mino-chi: max|dtheta|=5.09e-07 max|dphi|=6.32e-06 max|dpsi|=3.57e-06 max|dt|=1.77e-08
+    Mino period: elliptic K formula 1.6148483457, quadrature 1.6148483457; lambda-period 2.839226
+    per theta-period: dphi=2.094395 dpsi=-3.769911 dt=6.087248
+--- Phi=0 polar-crossing: a=0.8 b=0.0 Phi=0.0 Psi=0.5
+    x=1.3168304978 r=1.1475323515 K=3.2404438178 chi''=2.7001
+    theta band predicted [0.000000, 73.996440] deg; Hamiltonian integration [0.057155, 73.996440] deg
+    max|x - x0| over 3 theta-periods (lambda in [0,8.194]) = 1.14e-08; max|H| = 1.38e-11
+    Ham vs Mino-chi: max|dtheta|=9.67e-08 max|dphi|=7.29e-09 max|dpsi|=2.33e-07 max|dt|=1.27e-08
+    Mino period: elliptic K formula 1.6501879299, quadrature 1.6501879299; lambda-period 2.731270
+    per theta-period: dphi=-1.379712 dpsi=3.464257 dt=6.106098

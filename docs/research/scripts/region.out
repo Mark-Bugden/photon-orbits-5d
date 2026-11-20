@@ -1,0 +1,65 @@
+=== a=0.0, b=0.0, x+=1.000000
+  Phi_plus : closed form +2.00000000 (x=2.000000) | ray bisection +2.00000000 (x=2.000000)
+  Phi_minus: closed form -2.00000000 (x=2.000000) | ray bisection -2.00000000 (x=2.000000)
+  Psi_plus : closed form +2.00000000 (x=2.000000) | ray bisection +2.00000000 (x=2.000000)
+  Psi_minus: closed form -2.00000000 (x=2.000000) | ray bisection -2.00000000 (x=2.000000)
+  star-shaped w.r.t. origin violations: 0;  convexity violations (300 random chords): 0
+  theta-band width on boundary (deg): max 1.06e-02;  x range over region [2.00000, 2.00000]
+  extent: Phi in [-2.00000, 2.00000], Psi in [-2.00000, 2.00000]
+=== a=0.5, b=0.0, x+=0.750000
+  Phi_plus : closed form +2.50000000 (x=3.000000) | ray bisection +2.50000000 (x=2.999999)
+  Phi_minus: closed form -1.50000000 (x=1.000000) | ray bisection -1.50000000 (x=1.000001)
+  Psi_plus : closed form +1.86602540 (x=1.616025) | ray bisection +1.86602540 (x=1.616026)
+  Psi_minus: closed form -1.86602540 (x=1.616025) | ray bisection -1.86602540 (x=1.616026)
+  star-shaped w.r.t. origin violations: 0;  convexity violations (300 random chords): 0
+  theta-band width on boundary (deg): max 1.54e-02;  x range over region [1.00075, 2.99875]
+  extent: Phi in [-1.50000, 2.50000], Psi in [-1.86603, 1.86603]
+=== a=0.49, b=0.49, x+=0.359399
+  Phi_plus : closed form +2.40712473 (x=2.657025) | ray bisection +2.40712473 (x=2.657024)
+  Phi_minus: closed form -1.14142136 (x=0.411321) | ray bisection -1.14142136 (x=0.411322)
+  Psi_plus : closed form +2.40712473 (x=2.657025) | ray bisection +2.40712473 (x=2.657024)
+  Psi_minus: closed form -1.14142136 (x=0.411321) | ray bisection -1.14142136 (x=0.411322)
+  star-shaped w.r.t. origin violations: 0;  convexity violations (300 random chords): 0
+  theta-band width on boundary (deg): max 3.96e-02;  x range over region [0.41231, 2.65604]
+  extent: Phi in [-1.20936, 2.40712], Psi in [-1.20936, 2.40712]
+=== a=0.6, b=0.3, x+=0.482906
+  Phi_plus : closed form +2.57162336 (x=3.081623) | ray bisection +2.57162336 (x=3.081622)
+  Phi_minus: closed form -1.26457513 (x=0.574575) | ray bisection -1.26457513 (x=0.574576)
+  Psi_plus : closed form +2.15325626 (x=2.093256) | ray bisection +2.15325626 (x=2.093256)
+  Psi_minus: closed form -1.36055513 (x=0.700555) | ray bisection -1.36055513 (x=0.700556)
+  star-shaped w.r.t. origin violations: 0;  convexity violations (300 random chords): 0
+  theta-band width on boundary (deg): max 2.84e-02;  x range over region [0.57551, 3.08015]
+  extent: Phi in [-1.26458, 2.57162], Psi in [-1.36298, 2.15326]
+=== a=0.9, b=0.09, x+=0.132313
+  Phi_plus : closed form +2.89786722 (x=3.789767) | ray bisection +2.89786722 (x=3.789765)
+  Phi_minus: closed form -1.04358899 (x=0.135489) | ray bisection -1.04358899 (x=0.135490)
+  Psi_plus : closed form +1.61489837 (x=0.894898) | ray bisection +1.61489837 (x=0.894899)
+  Psi_minus: closed form -1.13453624 (x=0.234536) | ray bisection -1.13453624 (x=0.234537)
+  star-shaped w.r.t. origin violations: 0;  convexity violations (300 random chords): 0
+  theta-band width on boundary (deg): max 4.68e-02;  x range over region [0.13650, 3.78717]
+  extent: Phi in [-1.06125, 2.89787], Psi in [-1.29329, 1.61490]
+=== a=0.3, b=0.6, x+=0.482906
+  Phi_plus : closed form +2.15325626 (x=2.093256) | ray bisection +2.15325626 (x=2.093256)
+  Phi_minus: closed form -1.36055513 (x=0.700555) | ray bisection -1.36055513 (x=0.700556)
+  Psi_plus : closed form +2.57162336 (x=3.081623) | ray bisection +2.57162336 (x=3.081622)
+  Psi_minus: closed form -1.26457513 (x=0.574575) | ray bisection -1.26457513 (x=0.574576)
+  star-shaped w.r.t. origin violations: 0;  convexity violations (300 random chords): 0
+  theta-band width on boundary (deg): max 2.84e-02;  x range over region [0.57972, 3.04415]
+  extent: Phi in [-1.36298, 2.15326], Psi in [-1.26458, 2.57162]
+=== a=0.7, b=0.2, x+=0.423746
+  Phi_plus : closed form +2.68819430 (x=3.348194) | ray bisection +2.68819430 (x=3.348192)
+  Phi_minus: closed form -1.22360680 (x=0.483607) | ray bisection -1.22360680 (x=0.483608)
+  Psi_plus : closed form +1.97467943 (x=1.684679) | ray bisection +1.97467943 (x=1.684679)
+  Psi_minus: closed form -1.38729833 (x=0.697298) | ray bisection -1.38729833 (x=0.697299)
+  star-shaped w.r.t. origin violations: 0;  convexity violations (300 random chords): 0
+  theta-band width on boundary (deg): max 2.89e-02;  x range over region [0.48456, 3.34634]
+  extent: Phi in [-1.22361, 2.68819], Psi in [-1.39124, 1.97468]
+=== a=0.4, b=0.4, x+=0.640000
+  Phi_plus : closed form +2.34164079 (x=2.581641) | ray bisection +2.34164079 (x=2.581640)
+  Phi_minus: closed form -1.44721360 (x=0.887214) | ray bisection -1.44721360 (x=0.887214)
+  Psi_plus : closed form +2.34164079 (x=2.581641) | ray bisection +2.34164079 (x=2.581640)
+  Psi_minus: closed form -1.44721360 (x=0.887214) | ray bisection -1.44721360 (x=0.887214)
+  star-shaped w.r.t. origin violations: 0;  convexity violations (300 random chords): 0
+  theta-band width on boundary (deg): max 2.14e-02;  x range over region [0.88801, 2.58084]
+  extent: Phi in [-1.44721, 2.34164], Psi in [-1.44721, 2.34164]
+saved region_maps.png

@@ -1,0 +1,21 @@
+Installed 5 packages in 1.00s
+== Fig4.9 (cusp, a=0.9,b=0.1,Phi=Psi=0.8)
+   theory: x = 1.89904, r = sqrt(x) = 1.37806, K = 4.52217, theta in [0.3880, 1.1536] rad
+   digitised 'x' curve: mean 1.3778 (std 0.0006)  -> the curve labelled x is r = sqrt(x)
+   fitted start (lambda = 0.0): theta0 = 0.3924 rad (increasing), phi0 = 1.7476, psi0 = 0.4490
+   rms residuals (rad): theta 0.0036, phi 0.0036, psi 0.0045
+     lambda=0.0: theta=0.392 phi=1.748 psi=0.449
+     lambda=2.0: theta=0.989 phi=2.595 psi=2.981
+     lambda=3.0: theta=0.415 phi=3.211 psi=3.694
+     lambda=4.0: theta=0.739 phi=4.398 psi=4.207
+     lambda=5.0: theta=1.122 phi=4.503 psi=5.883
+== Fig4.11 (confused, a=0.9,b=0.09,Phi=0.1,Psi=0.01)
+   theory: x = 1.26742, r = sqrt(x) = 1.12580, K = 3.36057, theta in [0.0490, 1.5653] rad
+   digitised 'x' curve: mean 1.1244 (std 0.0856)  -> the curve labelled x is r = sqrt(x)
+   fitted start (lambda = 1.0): theta0 = 1.0214 rad (decreasing), phi0 = -0.9799, psi0 = 2.9571
+   rms residuals (rad): theta 0.0062, phi 0.0053, psi 0.0041
+     lambda=1.0: theta=1.021 phi=-0.980 psi=2.957
+     lambda=2.0: theta=0.070 phi=0.869 psi=2.893
+     lambda=3.0: theta=1.152 phi=1.126 psi=2.829
+     lambda=4.0: theta=0.668 phi=0.576 psi=5.858
+     lambda=5.0: theta=0.351 phi=3.072 psi=5.796
