@@ -6,7 +6,7 @@ An interactive demo of spherical photon orbits around a five-dimensional rotatin
 
 The visitor sets the hole's two spins, $a$ and $b$, and picks the photon's two angular momenta, $\Phi$ and $\Psi$, on a pad that shows which pairs have a spherical orbit. The demo then draws the orbit on its spheroid, with the fourth dimension, $\psi$, shown as colour.
 
-**Status:** milestones 1 and 2 of [the plan](docs/plan.md) are done: the physics, whose equations are set out in [docs/equations.md](docs/equations.md), and the 3D view. For now the spins and momenta are set with plain sliders, and most pairs of momenta have no orbit; the pad and the presets come next, in milestone 3.
+**Status:** milestones 1 to 3 of [the plan](docs/plan.md) are done: the physics, whose equations are set out in [docs/equations.md](docs/equations.md), the 3D view, and the momentum pad with presets for the paper's figures. The side panel, which plots θ, φ and ψ against λ, comes next, in milestone 4.
 
 ## Repository layout
 

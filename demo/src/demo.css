@@ -56,6 +56,118 @@
   background: color-mix(in oklab, var(--color-surface) 85%, transparent);
 }
 
+/* The spins and the momenta are groups that span the rail, each with a pair of sliders side by side. */
+[data-demo] .po-group {
+  grid-column: 1 / -1;
+}
+
+[data-demo] .po-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+[data-demo] .po-badge {
+  padding: 0 var(--space-2);
+  color: var(--color-on-accent);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-strong);
+  line-height: 1.5;
+  background: var(--color-accent);
+  border-radius: var(--radius-pill);
+}
+
+[data-demo] .po-badge[hidden] {
+  display: none;
+}
+
+/* The momentum pad: square, as wide as the rail, but no more than 20rem when the rail stacks below the stage. */
+[data-demo] .po-pad-canvas {
+  display: block;
+  width: 100%;
+  max-width: 20rem;
+  aspect-ratio: 1;
+  cursor: crosshair;
+  outline: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* Beside the stage, the pad shrinks in a short window, so that the whole rail still fits in it: the rest of the
+   rail takes about 24rem. */
+@container (min-width: 48rem) {
+  [data-demo] .po-pad-canvas {
+    justify-self: center;
+    max-width: max(9rem, var(--dk-fit-height, 100dvh) - 25rem);
+  }
+}
+
+/* The colour legend: the paper's wheel in the 3D view's top-left corner, with a needle at the photon's ψ. */
+[data-demo] .po-legend {
+  --size: 3.5rem;
+  --thickness: 0.55rem;
+  position: absolute;
+  top: calc(var(--space-3) + 1.1rem);
+  left: calc(var(--space-3) + 1.6rem);
+  width: var(--size);
+  height: var(--size);
+  color: var(--color-muted);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+[data-demo] .po-legend-ring {
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(from 90deg, #f00, #f0f, #00f, #0ff, #0f0, #ff0, #f00);
+  border-radius: 50%;
+  mask: radial-gradient(closest-side, transparent calc(100% - var(--thickness)), #000 calc(100% - var(--thickness) + 0.5px));
+}
+
+/* The needle: a short bar across the ring at the photon's ψ, turned about the centre. */
+[data-demo] .po-legend-needle {
+  position: absolute;
+  top: calc(50% - 1.5px);
+  left: 50%;
+  width: calc(var(--thickness) + 0.4rem);
+  height: 3px;
+  background: var(--color-text);
+  border-radius: 1.5px;
+  box-shadow: 0 0 0 1px var(--color-surface);
+  transform-origin: 0 50%;
+}
+
+[data-demo] .po-legend-centre,
+[data-demo] .po-legend-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+[data-demo] .po-legend-centre {
+  transform: translate(-50%, -50%);
+}
+
+/* Each label sits just outside the ring, at its angle. */
+[data-demo] .po-legend-label {
+  transform: translate(-50%, -50%) rotate(var(--angle)) translateX(calc(var(--size) / 2 + 0.85rem)) rotate(calc(-1 * var(--angle)));
+}
+
+/* On phones the 3D view is small, so the legend is too. */
+@container (max-width: 47.99rem) {
+  [data-demo] .po-legend {
+    --size: 2.5rem;
+    --thickness: 0.45rem;
+    top: calc(var(--space-2) + 1rem);
+    left: calc(var(--space-2) + 1.4rem);
+    font-size: 0.6875rem;
+  }
+}
+
 /* The still image, shown instead if WebGL can't start. */
 [data-demo] .dk-stage-content img {
   display: block;

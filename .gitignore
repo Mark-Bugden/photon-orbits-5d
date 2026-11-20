@@ -6,3 +6,7 @@ Thumbs.db
 __pycache__/
 .venv/
 .pytest_cache/
+
+# Outputs of docs/research/scripts/presets/ (fits.json is kept)
+docs/research/scripts/presets/measured.json
+docs/research/scripts/presets/fit-*
