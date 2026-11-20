@@ -7,7 +7,7 @@ The interactive demo for this project. It is built with [demo-kit](https://githu
 ```sh
 npm install
 npm run dev
-npm test          # node:test: the physics, against the reference model's fixtures
+npm test          # node:test: the physics, against the reference model's fixtures, and the drawn path
 ```
 
 ## Build and check the bundle
@@ -25,7 +25,9 @@ The files to edit:
 | File | What to change |
 | --- | --- |
 | `public/manifest.json` | The demo's metadata. |
-| `src/main.js` | Controls, drawing and the `mount()` call. |
+| `src/main.js` | The controls, the animation clock, the status line and the `mount()` call. |
+| `src/scene/` | The 3D view, with three.js: the spheroids, the trail, the photon and the camera. |
+| `src/trail.js`, `src/colour.js` | The path ready to draw, and the paper's colour wheel. `test/trail.test.js` checks them. |
 | `src/physics/` | The orbits: a port of the Python reference model in `../src/photon_orbits/`, explained in `../docs/equations.md`. Change both together and regenerate `../tests/fixtures/orbits.json`, which `test/physics.test.js` replays. |
 | `public/data/`, `public/model/` | Runtime files. |
 | `public/static.webp`, `thumb.webp`, `og.jpg` | Images. |

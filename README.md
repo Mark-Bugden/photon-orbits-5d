@@ -6,13 +6,13 @@ An interactive demo of spherical photon orbits around a five-dimensional rotatin
 
 The visitor sets the hole's two spins, $a$ and $b$, and picks the photon's two angular momenta, $\Phi$ and $\Psi$, on a pad that shows which pairs have a spherical orbit. The demo then draws the orbit on its spheroid, with the fourth dimension, $\psi$, shown as colour.
 
-**Status:** the physics core (milestone 1 of [the plan](docs/plan.md)) is done and awaiting review. The equations it uses are set out in [docs/equations.md](docs/equations.md). The released demo is still a stub showing a title card.
+**Status:** milestones 1 and 2 of [the plan](docs/plan.md) are done: the physics, whose equations are set out in [docs/equations.md](docs/equations.md), and the 3D view. For now the spins and momenta are set with plain sliders, and most pairs of momenta have no orbit; the pad and the presets come next, in milestone 3.
 
 ## Repository layout
 
 | Path | What it is |
 | --- | --- |
-| [`demo/`](demo/) | The interactive demo, built with [demo-kit](https://github.com/Mark-Bugden/demo-kit). [`demo/src/physics/`](demo/src/physics/) is the JavaScript port of the reference model. Its README explains how to run and build the demo. |
+| [`demo/`](demo/) | The interactive demo, built with [demo-kit](https://github.com/Mark-Bugden/demo-kit). [`demo/src/physics/`](demo/src/physics/) is the JavaScript port of the reference model, and [`demo/src/scene/`](demo/src/scene/) the 3D view, drawn with [three.js](https://threejs.org/). Its README explains how to run and build the demo. |
 | [`src/photon_orbits/`](src/photon_orbits/) | Python: the reference model of the orbits, which the demo's physics is a port of. |
 | [`tests/`](tests/) | Python tests, and `fixtures/orbits.json`: reference results that the demo's physics must reproduce. |
 | [`docs/`](docs/) | [The plan](docs/plan.md), [the equations as implemented](docs/equations.md), and [the research](docs/research/) behind them: a line-by-line review of the paper with its errata, and a survey of existing tools. |
@@ -48,7 +48,7 @@ frequencies(orbit, table)                               # turns of φ and ψ per
 cd demo
 npm install
 npm run dev       # live preview at http://localhost:5173
-npm test          # the physics, against the reference model's fixtures
+npm test          # the physics, against the reference model's fixtures, and the drawn path
 ```
 
 `src/photon_orbits/` and `demo/src/physics/` do the same operations in the same order. If you change one, change the other, regenerate the fixtures, and run both test suites. CI runs both on every pull request.
