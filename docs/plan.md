@@ -267,11 +267,11 @@ pyproject.toml         a uv project; commit uv.lock
   - Measured in Edge, playing at 60 frames a second, the main thread's time per frame, 3D trail included: on Fig 4.10's longest trail, 4.3 ms with the strip and 4.6 ms with the torus; near the extremal edge, 8.8 ms and 10.5 ms.
 - [x] Checked in Edge, with no console errors: standalone and embedded, both themes, phone width; every preset; the tabs' arrow keys; Reset. On a phone, a swipe on the panel scrolls the page, and one on the 3D view turns it.
 
-### After step 4: notes on the live demo (PR, then release `v0.4.1`)
+### After step 4: notes on the live demo (PRs, then releases `v0.4.1` and `v0.4.2`)
 - [x] **A steady zoom** (Mark, 2026-11-20). A preset used to fit the camera to its spheroid, so the zoom jumped with every preset. Now a preset turns the camera to its viewpoint and keeps the visitor's zoom. The default zoom fits a sphere of radius 2.25, which holds the largest spheroid any spins and momenta give: 2.23, counter-rotating at a or b = 0.99. "Reset view" goes back to it.
 - [x] **The trail's length is the visitor's** (Mark, 2026-11-20). Presets no longer set it, and changing it no longer shows "Custom". The opening still has exactly three oscillations of Fig 4.5's trail. A preset's span now gives only the photon's start.
 - [x] **Which way the hole turns** (Mark, 2026-11-20: "it's not clear in which direction the black hole is rotating"). An arrow below the spheroid, around a short axle on the z axis, turns clockwise seen from above, towards −φ (`demo/src/scene/spin.js`).
-  - It was above the spheroid at first, which Mark found too obtrusive: most paths are on the upper half. Below, it is smaller and a muted grey-blue.
+  - It was above the spheroid in v0.4.1, which Mark found too obtrusive: most paths are on the upper half. In v0.4.2 it is below, smaller and a muted grey-blue.
   - It hangs 0.6 below the spheroid, which clears the spheroid's outline from every preset's viewpoint (they look down at up to 36°; the Equal spins preset needs 0.6, the rest less). From higher up, the spheroid hides it.
   - It has a dark outline, so it reads on the dark spheroid and on either theme's page.
   - It turns with the camera, so its head is always at the front left: from the side, the front of the hole moves to the left.
