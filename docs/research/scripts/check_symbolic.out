@@ -1,0 +1,87 @@
+=== Inverse metric (3.3) ===
+g^tt (3.3c): computed - paper -> OK (exactly 0 at 8 random rational points)
+g^tphi (3.3d): computed - paper -> OK (exactly 0 at 8 random rational points)
+g^tpsi (3.3e): computed - paper -> OK (exactly 0 at 8 random rational points)
+g^phiphi (3.3f): computed - paper -> OK (exactly 0 at 8 random rational points)
+g^psipsi (3.3g): computed - paper -> OK (exactly 0 at 8 random rational points)
+g^phipsi (3.3h): computed - paper -> OK (exactly 0 at 8 random rational points)
+g^xx = 4 Delta/rho^2 and g^thth = 1/rho^2 follow from g_xx = rho^2/(4Delta), g_thth = rho^2 (diagonal).
+
+=== Hamilton-Jacobi separation ===
+rho^2*2H - [4 Delta p_x^2 + p_th^2 - (X + Delta*Theta)/Delta]: OK (exactly 0 at 8 random rational points)
+f = -(X+Delta Theta)/(2 rho^2 Delta) independent of K: OK (exactly 0 at 8 random rational points)
+(3.7) H - (1/2) g^{mn} p_m p_n: OK (exactly 0 at 8 random rational points)
+
+=== First-order equations (2.3) ===
+(2.3a) rho^2 tdot: OK (exactly 0 at 8 random rational points)
+(2.3d) rho^2 phidot: OK (exactly 0 at 8 random rational points)
+(2.3e) rho^2 psidot: OK (exactly 0 at 8 random rational points)
+(3.8c) tdot = (1/(2 rho^2 Delta)) d(X+Delta Theta)/dE: OK (exactly 0 at 8 random rational points)
+(3.8d) phidot = -(1/(2 rho^2 Delta)) d(X+Delta Theta)/dPhi: OK (exactly 0 at 8 random rational points)
+(3.8e) psidot: OK (exactly 0 at 8 random rational points)
+(2.3b)/(3.5a): rho^2 xdot = 4 Delta p_x, so (rho^2 xdot)^2 = 16 Delta^2 p_x^2 = 4X  <=> p_x^2 = X/(4 Delta^2)  [consistent]
+
+=== Cubic chi (Sec 3.2), E = 1 ===
+chi polynomial in x, degree 3
+a3: computed - paper = 0
+a2: computed - paper = 0
+a1: computed - paper = 0
+a0: computed - paper = 0
+general-E coefficients (homogeneous of degree 2 in (E,Phi,Psi,sqrt K)):
+     E**2
+     E**2*a**2 + E**2*b**2 - K
+     E**2*a**2*b**2 + E**2*a**2*mu + E**2*b**2*mu + 2*E*Phi*a*mu + 2*E*Psi*b*mu - K*a**2 - K*b**2 + K*mu + Phi**2*a**2 - Phi**2*b**2 - Psi**2*a**2 + Psi**2*b**2
+     E**2*a**2*b**2*mu + 2*E*Phi*a*b**2*mu + 2*E*Psi*a**2*b*mu - K*a**2*b**2 + Phi**2*a**2*b**2 - Phi**2*b**4 + Phi**2*b**2*mu + 2*Phi*Psi*a*b*mu - Psi**2*a**4 + Psi**2*a**2*b**2 + Psi**2*a**2*mu
+P := chi + K*Delta is K-free: True
+P(x) coefficients: [1, a**2 + b**2, Phi**2*a**2 - Phi**2*b**2 + 2*Phi*a*mu - Psi**2*a**2 + Psi**2*b**2 + 2*Psi*b*mu + a**2*b**2 + a**2*mu + b**2*mu, Phi**2*a**2*b**2 - Phi**2*b**4 + Phi**2*b**2*mu + 2*Phi*Psi*a*b*mu + 2*Phi*a*b**2*mu - Psi**2*a**4 + Psi**2*a**2*b**2 + Psi**2*a**2*mu + 2*Psi*a**2*b*mu + a**2*b**2*mu]
+P0 = mu(ab + b Phi + a Psi)^2 + (a^2-b^2)(b^2 Phi^2 - a^2 Psi^2): True
+P equals Delta*[x + (a^2-b^2)(Phi^2/(x+a^2) - Psi^2/(x+b^2))] + mu*T^2/((x+a^2)(x+b^2)): True
+F(x) = P' Delta - P Delta' degree: 4  leading coeff: 1
+F coefficients:
+   x^4: 1
+   x^3: 2*(a**2 + b**2 - mu)
+   x^2: -Phi**2*a**2 + Phi**2*b**2 - 2*Phi*a*mu + Psi**2*a**2 - Psi**2*b**2 - 2*Psi*b*mu + a**4 + 4*a**2*b**2 - 2*a**2*mu + b**4 - 2*b**2*mu
+   x^1: 2*(-Phi**2*a**2*b**2 + Phi**2*b**4 - Phi**2*b**2*mu - 2*Phi*Psi*a*b*mu - 2*Phi*a*b**2*mu + Psi**2*a**4 - Psi**2*a**2*b**2 - Psi**2*a**2*mu - 2*Psi*a**2*b*mu + a**4*b**2 + a**2*b**4 - a**2*b**2*mu)
+   x^0: -Phi**2*a**2*b**4 + Phi**2*b**6 - 2*Phi**2*b**4*mu + Phi**2*b**2*mu**2 - 2*Phi*Psi*a**3*b*mu - 2*Phi*Psi*a*b**3*mu + 2*Phi*Psi*a*b*mu**2 - 2*Phi*a*b**4*mu + 2*Phi*a*b**2*mu**2 + Psi**2*a**6 - Psi**2*a**4*b**2 - 2*Psi**2*a**4*mu + Psi**2*a**2*mu**2 - 2*Psi*a**4*b*mu + 2*Psi*a**2*b*mu**2 + a**4*b**4 + a**2*b**2*mu**2
+
+=== Horizon & angular velocity sign ===
+Delta(x_+) = 0: True
+xi = d_t + [a/(x_+ + a^2)] d_phi + [b/(x_+ + b^2)] d_psi : g(xi,xi)|_H = [0.206796886330, 0.297183783124, 0.391540056697]
+xi = d_t - [a/(x_+ + a^2)] d_phi - [b/(x_+ + b^2)] d_psi : g(xi,xi)|_H = [-0.e-125, -0.e-127, -0.e-128]
+frame dragging omega_phi = -g_tphi/g_phiphi (theta=pi/2, b=0): -a*mu/(a**2*mu + a**2*x + x**2)
+
+=== mu = 0: BL coords are flat spheroidal coordinates of R^4 ===
+pullback of dX^2 - spatial BL metric at mu=0: Matrix([[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]])
+
+=== Symmetry (2.2): a<->b, theta->pi/2-theta (S->1-S), phi<->psi (Phi<->Psi) ===
+calX invariant: OK (exactly 0 at 8 random rational points)
+Theta invariant: OK (exactly 0 at 8 random rational points)
+Delta, rho^2 invariant: OK (exactly 0 at 8 random rational points) OK (exactly 0 at 8 random rational points)
+
+=== Theta in y = sin^2 theta (Sec 3.1.2), E = 1 ===
+y(1-y)Theta - Q_paper: OK (exactly 0 at 8 random rational points)
+F_Q(0) = [-Phi**2, K + Phi**2 - Psi**2 + a**2, -2*K - 4*a**2 + 2*b**2, 6*a**2 - 6*b**2]
+F_Q(1) = [-Psi**2, -K + Phi**2 - Psi**2 - b**2, -2*K + 2*a**2 - 4*b**2, 6*a**2 - 6*b**2]
+dy/dlambda = 2 sin cos thetadot => (rho^2 dy/dlambda)^2 = 4 S(1-S) Theta = 4 Q(y=S): OK (exactly 0 at 8 random rational points)
+If y1,y2 are roots of Q: Q - (y-y1)(y2-y)G(y) with G=(b^2-a^2)(y+y1+y2)-(b^2-2a^2-K) is
+   Q = (y-y1)(y2-y) G(y) for any two roots (random numeric tests): True
+
+=== a = b: max over theta of -Phi^2/sin^2 - Psi^2/cos^2 ===
+at sin^2 = |Phi|/(|Phi|+|Psi|): value = -(P + Q)**2   [P=|Phi|, Q=|Psi|]  => Theta_max = a^2 + K - (|Phi|+|Psi|)^2
+
+=== Equatorial circular orbits (Sec 3.4): mu=1, Psi=0, K=Phi^2-b^2 ===
+x^2 coeff: -Phi**2 + a**2 + 2*b**2   (paper: a^2 + 2b^2 - Phi^2)
+x^1 coeff - paper: 0
+x^0 coeff - paper's printed constant: -Phi**2*b**4 + 3*Phi**2*b**2 - Phi**2 + 2*Phi*a*b**2 - 2*Phi*a + a**2*b**4 - a**2*b**2 - a**2 - b**4
+correct x^0 coeff: b**2*(Phi + a)*(-Phi*b**2 + Phi + a*b**2 + a)  =  -Phi**2*b**4 + Phi**2*b**2 + 2*Phi*a*b**2 + a**2*b**4 + a**2*b**2
+  (3.9)-(3.12) branch (1+a), sqrt sign +1: chi = 0, chi' = 0
+  (3.9)-(3.12) branch (1+a), sqrt sign -1: chi = 0, chi' = 0
+  (3.9)-(3.12) branch (1-a), sqrt sign +1: chi = 0, chi' = 0
+  (3.9)-(3.12) branch (1-a), sqrt sign -1: chi = 0, chi' = 0
+  paper's printed chi at its own solution (a=1/2,b=1/4): 7.60989306374956  (nonzero => printed constant is a typo, solutions are right)
+number of (x,Phi) solutions of chi=chi'=0: 5
+    x = -b**2    Phi = -a
+    x = a - b**2 - sqrt(a**2 + 2*a - b**2 + 1) + 1    Phi = 1 - sqrt(a**2 + 2*a - b**2 + 1)
+    x = -a - b**2 + sqrt(a**2 - 2*a - b**2 + 1) + 1    Phi = -sqrt(a**2 - 2*a - b**2 + 1) - 1
+    x = -a - b**2 - sqrt(a**2 - 2*a - b**2 + 1) + 1    Phi = sqrt(a**2 - 2*a - b**2 + 1) - 1
+    x = a - b**2 + sqrt(a**2 + 2*a - b**2 + 1) + 1    Phi = sqrt(a**2 + 2*a - b**2 + 1) + 1

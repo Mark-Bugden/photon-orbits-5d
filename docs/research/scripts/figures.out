@@ -1,0 +1,24 @@
+Installed 14 packages in 1.23s
+Fig 4.2: a=0.5 b=0.0 Phi=0.0 Psi=0.0 | x=1.750000 r=1.322876 K=3.750000 | theta in [0.000, 90.000] deg | x+=0.75000
+      per chi-period: dlambda=2.99134 dt=6.18383 dphi=-0.79812 dpsi=0.00000 dsigma=1.59624 | dphi/dsig at (y1,y2)=(-0.5,-0.5) dpsi/dsig at (y1,y2)=(0,0) | chi''=3.500
+Fig 4.3: a=0.5 b=0.0 Phi=2.0 Psi=0.0 | x=2.750000 r=1.658312 K=5.750000 | theta in [55.938, 90.000] deg | x+=0.75000
+      per chi-period: dlambda=3.69699 dt=6.34797 dphi=2.53623 dpsi=0.00000 dsigma=1.32549 | dphi/dsig at (y1,y2)=(2.414,1.5) dpsi/dsig at (y1,y2)=(0,0) | chi''=5.500
+Fig 4.4: a=0.8 b=0.0 Phi=0.0 Psi=0.5 | x=1.316830 r=1.147532 K=3.240444 | theta in [0.000, 73.996] deg | x+=0.36000
+      per chi-period: dlambda=2.73127 dt=6.10610 dphi=-1.37971 dpsi=3.46426 dsigma=1.65019 | dphi/dsig at (y1,y2)=(-0.8361,-0.8361) dpsi/dsig at (y1,y2)=(0.743,6.821) | chi''=2.700
+Fig 4.5: a=0.8 b=0.0 Phi=0.0 Psi=0.5 | x=1.316830 r=1.147532 K=3.240444 | theta in [0.000, 73.996] deg | x+=0.36000
+      per chi-period: dlambda=2.73127 dt=6.10610 dphi=-1.37971 dpsi=3.46426 dsigma=1.65019 | dphi/dsig at (y1,y2)=(-0.8361,-0.8361) dpsi/dsig at (y1,y2)=(0.743,6.821) | chi''=2.700
+Fig 4.6: a=0.0 b=0.99 Phi=0.0 Psi=0.0 | x=1.019900 r=1.009901 K=3.019900 | theta in [0.000, 90.000] deg | x+=0.01990
+      per chi-period: dlambda=2.51240 dt=5.87853 dphi=0.00000 dpsi=-1.66623 dsigma=1.68307 | dphi/dsig at (y1,y2)=(0,0) dpsi/dsig at (y1,y2)=(-0.99,-0.99) | chi''=2.040
+Fig 4.7: a=0.6 b=0.3 Phi=1.0 Psi=-1.0 | x=1.754557 r=1.324597 K=4.020430 | theta in [37.591, 51.526] deg | x+=0.48291
+      per chi-period: dlambda=3.01913 dt=6.12397 dphi=2.11333 dpsi=-3.82001 dsigma=1.52365 | dphi/dsig at (y1,y2)=(1.981,0.9257) dpsi/dsig at (y1,y2)=(-2.07,-3.061) | chi''=3.386
+Fig 4.8: a=0.9 b=0.1 Phi=0.8 Psi=0.8 | x=1.899039 r=1.378056 K=4.522172 | theta in [22.232, 66.096] deg | x+=0.09000
+      per chi-period: dlambda=3.26634 dt=6.18386 dphi=1.92490 dpsi=3.36485 dsigma=1.41181 | dphi/dsig at (y1,y2)=(4.666,0.03438) dpsi/dsig at (y1,y2)=(1.161,5.099) | chi''=3.990
+Fig 4.10: a=0.9 b=0.09 Phi=0.1 Psi=0.01 | x=1.267423 r=1.125799 K=3.360570 | theta in [2.807, 89.687] deg | x+=0.13231
+      per chi-period: dlambda=2.70065 dt=5.94694 dphi=1.68861 dpsi=2.92085 dsigma=1.62214 | dphi/dsig at (y1,y2)=(40.78,-0.8056) dpsi/dsig at (y1,y2)=(-0.1249,335.7) | chi''=2.520
+
+Fig 4.12: circular orbit at theta = pi/4, a=0.5, b=0.25
+   x=0.961862 r=0.980746 K=2.088834 Phi=-0.764662 Psi=-0.733371  | re-solved from (Phi,Psi): x=0.961862, theta band [45.0000,45.0000] deg
+   x=1.455284 r=1.206351 K=3.203956 Phi=-0.929241 Psi=+0.903667  | re-solved from (Phi,Psi): x=1.455284, theta band [45.0000,45.0000] deg
+   x=1.906766 r=1.380857 K=4.149537 Phi=+1.048754 Psi=-1.026162  | re-solved from (Phi,Psi): x=1.906766, theta band [45.0000,45.0000] deg
+   paper's rounded values Phi=-0.9292, Psi=0.9036 -> [(np.float64(1.455286), np.float64(3.203967), np.float64(44.68560279506338), np.float64(45.31525562974773))]
+saved figures_repro.png
