@@ -1,12 +1,13 @@
 {
   "name": "photon-orbits-5d-demo",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "test": "node --test",
     "validate": "demo-kit validate dist/"
   },
   "dependencies": {

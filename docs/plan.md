@@ -82,6 +82,12 @@ Drawing      X = √(x + a²) sinθ cos φ,   Y = √(x + a²) sinθ sin φ,   Z
   - the solver's bracket starts just above x₊, and square roots are clamped at 0.
 
   With them, a stress test passed every time. It used 96 directions × 8 fractions of the way to the edge, on a = 0.9, b = 0.1; a = 0.99, b = 0.01; a = 0.7, b = 0.3; a = b = 0.5; and three cases with a + b = 0.999. Even at 0.999 of the way to the edge, the orbits stay at least 0.002 in x outside the horizon. a = 1, b = 0 (x₊ = 0) stays excluded by the sliders' 0.99 maximum.
+
+  **Update from milestone 1** ([equations §8](equations.md#extremal-holes)):
+  - It is not just the corner. At exact extremality the whole co-rotating edge is the straight segment Φ + Ψ = −1, where 𝓔(x₊) = 0, and the orbits close on the horizon along it.
+  - The research solver stopped about 3·10⁻⁴ short of that edge. The solver now works in u = x − x₊, which reaches it exactly.
+  - With the true edge, the stress test's orbits stay at least 0.0019 in x outside the horizon.
+  - Near that edge, φ winds tens of turns per oscillation.
 - **Near-zero momenta are snapped to 0.** A |Φ| or |Ψ| below 10⁻¹² counts as exactly 0. Otherwise a value like Φ = 10⁻¹⁶ (for example, from the ray straight up the Ψ axis) puts the band edge at y₁ ≈ 0 while the formulas still divide by y. The reference script `reference_impl.py` divides by zero there, at any spins.
 
 ### Errata in the paper
@@ -185,14 +191,15 @@ pyproject.toml         a uv project; commit uv.lock
 - [ ] Mark updates the title in the site's write-up, `content/projects/photon-orbits-5d.md` in Mark-Bugden.github.io, which still says "Circling the Sphere".
 
 ### 1. Physics core (PR). Gate: Mark reviews the equations before any drawing
-- [ ] Set up the uv project, and turn `research/scripts/mp5d.py` and `reference_impl.py` into the Python reference module, with the two guards from "The physics". pytest covers:
+- [x] Set up the uv project, and turn `research/scripts/mp5d.py` and `reference_impl.py` into the Python reference module, with the two guards from "The physics". pytest covers:
   - the unit-test table, region vertices, out-of-region cases, invariances and the closed orbit ([paper review §B7](research/paper-review.md#b7-unit-test-values));
   - extremal black holes, and momenta of 10⁻¹⁶;
   - the Hamiltonian cross-check against the full metric.
-- [ ] `docs/equations.md`: the corrected equations exactly as implemented, for Mark's review.
-- [ ] The JS port in `demo/src/physics/`, with node:test replaying the Python fixtures to 1e-9.
-- [ ] A README for the repo.
-- [ ] Bump the version, since `demo/` changes. The site's stub doesn't change.
+- [x] `docs/equations.md`: the corrected equations exactly as implemented, for Mark's review.
+- [x] The JS port in `demo/src/physics/`, with node:test replaying the Python fixtures to 1e-9.
+- [x] A README for the repo.
+- [x] Bump the version, since `demo/` changes (0.1.3). The site's stub doesn't change.
+- [ ] Mark reviews `docs/equations.md`.
 
 ### 2. The 3D view (PR, then release `v0.2.0` with status `in-progress`)
 - [ ] The three.js scene:
@@ -262,5 +269,6 @@ Settled with Mark on 2026-11-20. The comparison page, <https://claude.ai/artifac
 - **Phones.** Dragging to rotate competes with scrolling the page. Test in step 2. The fallback is two-finger rotation on touch screens.
 - **The pad on narrow screens.** On phones, the controls rail stacks above the stage, and the pad must stay usable at about 280 px.
 - **Orbits near an axis.** φ or ψ can swing by about π within one step, which would smear the colour. Subdivision handles it, and Fig 4.10 is the test case.
+- **Orbits near the extremal co-rotating edge** wind φ and ψ by tens of turns per oscillation: about 21 at a = b = 0.5, 1 + Φ + Ψ = 10⁻⁴. The path must subdivide by φ as well as ψ. The pad might stop the dot just short of that edge.
 - **The one-orbit result** is numerical. The solver is written defensively, and logs if it ever finds a second root.
 - **Size.** About 0.6 MB of the 2 MB budget, so there is room.
