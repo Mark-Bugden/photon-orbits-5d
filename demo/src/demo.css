@@ -1,3 +1,62 @@
+/*
+ * The stage fits the window. On wide frames it keeps the manifest's height, but shrinks so that the whole frame
+ * (the stage, then the status line and "How this works", 6.5rem) fits in the window, down to 22rem. On the site,
+ * the window is what the page leaves below its title (--dk-fit-height, which the site sets); standalone, it is the
+ * whole window.
+ *
+ * On phones the 3D view comes first and the controls below it, so the orbit is what a visitor sees. The stage is
+ * square rather than the kit's 16:9, up to 70% of the window, so the page can still be scrolled around it:
+ * dragging on the 3D view turns the view, not the page.
+ */
+@container (min-width: 48rem) {
+  [data-demo] .dk-stage {
+    height: max(22rem, min(var(--dk-stage-height), var(--dk-fit-height, 100dvh) - 6.5rem));
+  }
+}
+
+@container (max-width: 47.99rem) {
+  [data-demo] .dk-rail {
+    order: 1;
+  }
+
+  [data-demo] .dk-stage {
+    height: min(100cqw, 0.7 * var(--dk-fit-height, 100dvh));
+    aspect-ratio: auto;
+  }
+}
+
+[data-demo] .po-canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  outline-offset: -2px;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+[data-demo] .po-canvas:active {
+  cursor: grabbing;
+}
+
+[data-demo] .po-view-buttons {
+  position: absolute;
+  right: var(--space-3);
+  bottom: var(--space-3);
+  display: flex;
+  gap: var(--space-2);
+}
+
+[data-demo] .po-view-button {
+  justify-content: center;
+  width: 2.75rem;
+  padding: 0;
+  background: color-mix(in oklab, var(--color-surface) 85%, transparent);
+}
+
+/* The still image, shown instead if WebGL can't start. */
 [data-demo] .dk-stage-content img {
   display: block;
   width: 100%;

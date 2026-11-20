@@ -132,6 +132,8 @@ Everything else checks out exactly, and the figure parameters reproduce every fi
 - **The colour wheel is the paper's** (Mark, 2026-11-20): hue = ψ/2π at full saturation and value, as Mathematica's `Hue` in Fig 4.1. That is red at 0, yellow at π/3, green at 2π/3, cyan at π, blue at 4π/3 and magenta at 5π/3. It is stored as a 256-entry table.
   - **Known limits** (measured for the comparison page, <https://claude.ai/artifact/H3VwXgAEs8gpsK1A31fqcv>):
     - about 12% of the wheel, the deep blue around ψ = 4π/3, is dim against the black sphere. Check in step 2 whether the path needs a faint light edge there.
+
+      **Measured in step 2:** against the drawn spheroid, pure blue is 1.6–1.7:1, below WCAG's 3:1 for lines; red is 3.4:1, magenta 4.3:1, and green, cyan and yellow 10:1 or more. The blue strands still stand out by hue. Mark looked at a side-by-side comparison and decided on no light edge (2026-11-20).
     - Opposite angles are less distinct for red-green colour-blind viewers. The torus tab shows ψ by position, so colour is never the only way to read it.
 - **Colour legend.** A ring in a corner of the 3D view, labelled 0, π/2, π and 3π/2, with a needle at the photon's current ψ.
 - **The page's colours** come from the kit v0.5.0 tokens.
@@ -154,8 +156,8 @@ Everything else checks out exactly, and the figure parameters reproduce every fi
 - **Performance.**
   - **Main thread only.** Recomputing an orbit costs well under a millisecond, and redrawing the pad's region a few milliseconds.
   - **Changes.** At most one recompute per frame, and nothing allocated per frame.
-  - **The path's buffer** is allocated once, for about 50,000 segments. Each frame rewrites only the visible window.
-  - **Detail near the axes.** Segments are subdivided where ψ jumps by more than 10° between samples.
+  - **The path's buffer** is allocated once, for 65,536 segments. Each frame rewrites only the visible window. A trail of λ = 300 on Fig 4.10 is about 18,000 segments, filled in about 2 ms. If a trail ever needs more, near the extremal edge, its oldest part is left out.
+  - **Detail near the axes.** One oscillation is drawn in 128 steps, and any step in which φ or ψ turns by more than 10° is halved, as often as needed, using the state between table nodes ([equations §6](equations.md#6-one-oscillation)).
   - **Pixel ratio** is capped at 2.
 - **Reuse.** The licence of Stein's page code is unclear, so we reimplement rather than copy. Ricky Reusser's "Geodesics in Kerr Spacetime" notebook (MIT) is the bar for visual polish.
 - **Two implementations.**
@@ -173,6 +175,7 @@ demo/                  the site bundle, built with demo-kit (see the site contra
   src/pad.js           the momentum pad, a control with the kit's shape ({ el, value, onChange })
   src/panel/           the side panel and the colour legend (2D canvas)
   src/colour.js        the paper's colour wheel
+  src/trail.js         the path ready to draw: one oscillation refined, and the trail's window of it
   test/                node:test, including the fixture replay
 src/photon_orbits/     Python reference model
 tests/                 pytest: the review's checks, and the fixture writer
@@ -187,7 +190,7 @@ pyproject.toml         a uv project; commit uv.lock
 - [x] Paper review, prior-art survey, and this plan.
 - [x] Mark settled the decisions (2026-11-20).
 - [x] Kit v0.5.0 and the new title. The stub's title card, `static.webp`, `thumb.webp` and `og.jpg`, now reads "Plotting the Photons", redrawn in the original's font. Demo version 0.1.2.
-- [ ] Mark merges the PR, which releases v0.1.2, still a stub.
+- [x] Mark merges the PR, which releases v0.1.2, still a stub.
 - [ ] Mark updates the title in the site's write-up, `content/projects/photon-orbits-5d.md` in Mark-Bugden.github.io, which still says "Circling the Sphere".
 
 ### 1. Physics core (PR). Gate: Mark reviews the equations before any drawing
@@ -199,19 +202,25 @@ pyproject.toml         a uv project; commit uv.lock
 - [x] The JS port in `demo/src/physics/`, with node:test replaying the Python fixtures to 1e-9.
 - [x] A README for the repo.
 - [x] Bump the version, since `demo/` changes (0.1.3). The site's stub doesn't change.
-- [ ] Mark reviews `docs/equations.md`.
+- [x] Mark reviews `docs/equations.md` (confirmed 2026-11-20). Milestone 2 adds one function, `between`, the state between two table nodes, for the drawing (equations §6, "Between the nodes").
 
 ### 2. The 3D view (PR, then release `v0.2.0` with status `in-progress`)
-- [ ] The three.js scene:
+- [x] The three.js scene:
   - the spheroids and equator ring;
   - the path coloured by ψ, the photon, the trail, and the animation clock.
-- [ ] Temporary sliders for a, b, Φ and Ψ.
-- [ ] Camera controls, both themes, fitting the window, `needsWebGL`.
-- [ ] Check in Edge:
-  - standalone, at phone width, and embedded as the site does it;
-  - `npm run build` and the validator;
-  - the bundle's size.
-- [ ] **Phones, early:** check that dragging to rotate doesn't trap page scrolling. The 3D view is shorter than the window, so the page can still scroll around it.
+
+  The spheroid is drawn as two shells either side of the path: an opaque backdrop just outside, for the far half, and a translucent shaded shell just inside, over the near half. So nothing behind the spheroid shows through it, and it looks the same in both themes.
+
+  The trail is drawn in time order, in two passes: the steps on the spheroid's far face, then those on its near face. Each step draws its dark edge and its colour together, so where strands cross, the newer one passes cleanly over the older, edge and all. Crossing strands lie at the same depth, so a depth test between them gave jagged crossings with no edge between the strands; and an edge drawn as a separate, wider line made the trail look dashed at every joint. The near/far split comes from the spheroid's outward normal at each step, so it costs nothing extra: the same two passes as before, and the same work per frame (measured: 2.7 ms before, 2.65 ms after, on the longest trail).
+- [x] Temporary sliders for a, b, Φ and Ψ, and the "Trail length" slider. The opening state is Fig 4.10 until step 3 chooses one.
+- [x] Camera controls, both themes, fitting the window, `needsWebGL`. Drag, or the arrow keys, to turn; the buttons, pinching, or + and − to zoom; "Reset view" goes back to the paper's viewpoint, fitted to the current spheroid. The zoom stays put when the orbit changes, so the spheroid visibly grows and shrinks.
+- [x] Check in Edge (headless, through Playwright), with no console errors:
+  - standalone, at phone width, and embedded as the site does it, in both themes;
+  - Figs 4.2, 4.3, 4.4, 4.6, 4.7, 4.8 and 4.10, Tangherlini, near the extremal edge, and momenta with no orbit. Every readout matches the paper review's values;
+  - `npm run build` and the validator: valid;
+  - the bundle's size: `demo.js` 599 KB, the whole bundle 677 KB of the 2 MB;
+  - the longest trail plays at 60 frames a second.
+- [x] **Phones, early:** with emulated touch, a swipe on the 3D view turns it and doesn't scroll the page; a swipe anywhere else scrolls. On phones the 3D view now comes first, above the controls, and is square, at most 70% of the window's height, so there is always page to scroll by. Still to try on a real phone.
 
 ### 3. Momentum pad and presets (PR)
 - [ ] The pad:
@@ -263,11 +272,12 @@ Settled with Mark on 2026-11-20. The comparison page, <https://claude.ai/artifac
 | Clock | λ only: the animation, the trail length and the side panel all use it. |
 | demo-kit | v0.5.0. |
 | Errata | Whether to post a corrected arXiv version is decided later. |
+| Blue strands | No light edge: blue is dim against the spheroid (1.6–1.7:1) but reads by hue (step 2). |
 
 ## Risks
 
-- **Phones.** Dragging to rotate competes with scrolling the page. Test in step 2. The fallback is two-finger rotation on touch screens.
-- **The pad on narrow screens.** On phones, the controls rail stacks above the stage, and the pad must stay usable at about 280 px.
+- **Phones.** Dragging to rotate competes with scrolling the page. Tested in step 2 with emulated touch: the page scrolls everywhere but on the 3D view, which is at most 70% of the window's height. Still to try on a real phone. The fallback is two-finger rotation on touch screens.
+- **The pad on narrow screens.** On phones, the controls rail stacks below the stage (since step 2), and the pad must stay usable at about 280 px.
 - **Orbits near an axis.** φ or ψ can swing by about π within one step, which would smear the colour. Subdivision handles it, and Fig 4.10 is the test case.
 - **Orbits near the extremal co-rotating edge** wind φ and ψ by tens of turns per oscillation: about 21 at a = b = 0.5, 1 + Φ + Ψ = 10⁻⁴. The path must subdivide by φ as well as ψ. The pad might stop the dot just short of that edge.
 - **The one-orbit result** is numerical. The solver is written defensively, and logs if it ever finds a second root.
