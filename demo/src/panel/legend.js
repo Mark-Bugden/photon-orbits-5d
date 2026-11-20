@@ -5,9 +5,9 @@
 // cyan, blue and magenta, so a conic gradient through those six draws it exactly.
 //
 // The wheel is the b-plane, so the spin b's arrow goes round it: the hole turns towards −ψ (docs/equations.md,
-// "Signs"), which is clockwise here. It is drawn as the 3D view's arrow for a is, pale with a dark outline.
+// "Signs"), which is clockwise here. It is drawn as the 3D view's arrow for a is.
 
-import { SURFACE } from '../scene/surfaces.js';
+import { ARROW } from '../scene/spin.js';
 
 const LABELS = [['0', 0], ['π/2', 90], ['π', 180], ['3π/2', 270]]; // and their angles, counter-clockwise
 
@@ -33,9 +33,9 @@ function arrow() {
     [x - HEAD[0] * out[0], y - HEAD[0] * out[1]],
   ].map(xy).join(' ');
   return `<svg class="po-legend-spin" viewBox="${-REACH} ${-REACH} ${2 * REACH} ${2 * REACH}" fill="none" stroke-linecap="round" stroke-linejoin="round">
-    <path d="${arc}" stroke="${SURFACE.backdrop}" stroke-width="4.5"/>
-    <polygon points="${head}" fill="${SURFACE.ring}" stroke="${SURFACE.backdrop}" stroke-width="2.3" paint-order="stroke"/>
-    <path d="${arc}" stroke="${SURFACE.ring}" stroke-width="2.2"/>
+    <path d="${arc}" stroke="${ARROW.edge}" stroke-width="4.5"/>
+    <polygon points="${head}" fill="${ARROW.core}" stroke="${ARROW.edge}" stroke-width="2.3" paint-order="stroke"/>
+    <path d="${arc}" stroke="${ARROW.core}" stroke-width="2.2"/>
   </svg>`;
 }
 

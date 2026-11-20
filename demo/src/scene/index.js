@@ -14,7 +14,7 @@ import { BEHIND, createSurfaces } from './surfaces.js';
 const FOV = 30; // degrees, vertical
 const VIEWPOINT = new Vector3(1.3, -2.4, 2).normalize(); // Mathematica's default, until a preset sets another
 // The default zoom just fits a sphere of this radius, and so every orbit's spheroid: the largest, counter-rotating at
-// a or b = 0.99, reach 2.23. Every preset's, at most 1.73, has room above it for the spin arrow.
+// a or b = 0.99, reach 2.23. Every preset's, at most 1.73, has room below it for the spin arrow.
 const FRAME = 2.25;
 const ZOOM = 0.8; // each press of a zoom button
 const TURN = Math.PI / 24; // each press of an arrow key: 7.5°
@@ -134,7 +134,7 @@ export function createView(stage, { onChange, reducedMotion = false }) {
     },
     /**
      * Shapes the spheroids, each given as its semi-axes [across, up], or null to hide the orbit's, and shows the
-     * spin arrow on top while `spinning`, that is while a > 0.
+     * spin arrow below it while `spinning`, that is while a > 0.
      */
     setShape(orbitAxes, horizonAxes, spinning) {
       surfaces.setShape(orbitAxes, horizonAxes);
