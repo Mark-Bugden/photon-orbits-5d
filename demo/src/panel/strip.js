@@ -1,7 +1,8 @@
-// θ, φ and ψ against λ over the trail, as in the paper's Figs 4.9 and 4.11: three rows sharing the λ axis, from
-// the trail's tail on the left to the photon on the right. θ keeps a fixed scale, with dashed lines at the band's
-// edges; φ and ψ are unwrapped, so each of their rows scales to its stretch. All three are in radians. A band
-// under ψ shows the trail's colour at each λ.
+// θ, φ and ψ against λ over the trail, after the paper's Figs 4.9 and 4.11: three rows sharing the λ axis, from
+// the trail's tail on the left to the photon on the right. Every row keeps a fixed scale, in radians. θ's has
+// dashed lines at the band's edges. φ and ψ run from 0 to 2π, as on the torus: where one passes a multiple of 2π,
+// its curve leaves at one edge of the row and comes back at the other. So does θ, through both the pole and the
+// equator, where it grows by π each oscillation. A band under ψ shows the trail's colour at each λ.
 //
 // Each curve is drawn through at most four values a pixel column (the first, lowest, highest and last there), so
 // a trail of a hundred oscillations costs about the same to draw as one of a few. Nothing is allocated per frame.
@@ -11,6 +12,7 @@ import { trace } from '../trail.js';
 import { angleTicks, linearTicks, tickSet } from './ticks.js';
 
 const PI = Math.PI;
+const TWO_PI = 2 * PI;
 const MAX_COLUMNS = 4096; // device pixels across the plot
 const MOST_POINTS = 20000; // of the trail: Fig 4.10's longest has 18,000; more, near the extremal edge, are thinned
 const LEFT = 46; // CSS pixels: each row's name and its ticks
@@ -32,7 +34,7 @@ export function createStrip() {
   // Per curve, four values a column: first, lowest, highest, last; NaN where no point falls.
   const curves = [0, 1, 2].map(() => new Float64Array(4 * MAX_COLUMNS));
   const hues = new Float64Array(MAX_COLUMNS);
-  const range = new Float64Array(6); // the lowest and highest θ, φ and ψ
+  const range = new Float64Array(6); // the lowest and highest θ, φ and ψ that each row shows
   const lamTicks = tickSet();
   const rowTicks = [tickSet(), tickSet(), tickSet()];
   const edgeValues = new Float64Array(2);
@@ -52,6 +54,42 @@ export function createStrip() {
   let pole = false;
   let equator = false;
 
+  // The row the pen draws in, from `lo` at `bottom` and rising k CSS pixels per unit, and whether it wraps every
+  // 2π; and the pen's last point, with its value unwrapped. Set before each row's stroke().
+  let rowTop = 0;
+  let rowBottom = 0;
+  let rowLo = 0;
+  let rowK = 1;
+  let wraps = false;
+  let penX = 0;
+  let penValue = 0;
+
+  const Y = (value) => rowBottom - rowK * ((wraps ? value - TWO_PI * Math.floor(value / TWO_PI) : value) - rowLo);
+
+  function moveTo(ctx, x, value) {
+    ctx.moveTo(x, Y(value));
+    penX = x;
+    penValue = value;
+  }
+
+  // On a row that wraps, where the line passes a multiple of 2π it leaves at that edge and carries on from the other.
+  function lineTo(ctx, x, value) {
+    if (wraps) {
+      let cell = Math.floor(penValue / TWO_PI);
+      const last = Math.floor(value / TWO_PI);
+      while (cell !== last) {
+        const up = last > cell;
+        const at = penX + ((TWO_PI * (up ? cell + 1 : cell) - penValue) / (value - penValue)) * (x - penX);
+        ctx.lineTo(at, up ? rowTop : rowBottom);
+        ctx.moveTo(at, up ? rowBottom : rowTop);
+        cell += up ? 1 : -1;
+      }
+    }
+    ctx.lineTo(x, Y(value));
+    penX = x;
+    penValue = value;
+  }
+
   function put(row, c, value) {
     const curve = curves[row];
     const i = 4 * c;
@@ -65,8 +103,6 @@ export function createStrip() {
       curve[i + 2] = value;
     }
     curve[i + 3] = value;
-    if (value < range[2 * row]) range[2 * row] = value;
-    if (value > range[2 * row + 1]) range[2 * row + 1] = value;
   }
 
   function collect(lam, theta, phi, psi) {
@@ -79,19 +115,19 @@ export function createStrip() {
     hues[c] = psi + psi0;
   }
 
-  // The range a row shows, into range[2·row] and range[2·row + 1]. θ's is fixed by how the orbit meets the axes:
-  // 0 to π/2, or on through the pole to −π/2, or through the equator to π. Through both, θ = χ/2 grows, and its
-  // row fits its curve, as φ's and ψ's do.
+  // Whether a row wraps every 2π: φ's and ψ's, and θ's through both the pole and the equator, where θ = χ/2 grows.
+  const wrapping = (row) => row > 0 || (pole && equator);
+
+  // The range a row shows, into range[2·row] and range[2·row + 1]: 0 to 2π on a row that wraps. Otherwise θ's is
+  // set by how the orbit meets the axes: 0 to π/2, or on through the pole to −π/2, or through the equator to π.
   function limits(row) {
-    if (row === 0 && !(pole && equator)) {
-      range[0] = pole ? -0.5 * PI : 0;
-      range[1] = equator ? PI : 0.5 * PI;
+    if (wrapping(row)) {
+      range[2 * row] = 0;
+      range[2 * row + 1] = TWO_PI;
       return;
     }
-    const span = Math.max(range[2 * row + 1] - range[2 * row], 0.5 * PI);
-    const middle = 0.5 * (range[2 * row] + range[2 * row + 1]);
-    range[2 * row] = middle - 0.54 * span;
-    range[2 * row + 1] = middle + 0.54 * span;
+    range[0] = pole ? -0.5 * PI : 0;
+    range[1] = equator ? PI : 0.5 * PI;
   }
 
   // The band's edges, which the θ row marks with dashed lines: θ_min and θ_max, or, where θ runs on through an
@@ -114,22 +150,22 @@ export function createStrip() {
     return 2;
   }
 
-  // Strokes a row's curve through its columns: value lo at `bottom`, rising k CSS pixels per unit.
-  function stroke(ctx, curve, ratio, bottom, lo, k) {
+  // Strokes a row's curve through its columns, in the row the pen is set to.
+  function stroke(ctx, curve, ratio) {
     ctx.beginPath();
     let started = false;
     for (let c = 0; c < columns; c++) {
       const i = 4 * c;
       if (Number.isNaN(curve[i])) continue;
       const x = LEFT + (c + 0.5) / ratio;
-      if (started) ctx.lineTo(x, bottom - k * (curve[i] - lo));
-      else ctx.moveTo(x, bottom - k * (curve[i] - lo));
+      if (started) lineTo(ctx, x, curve[i]);
+      else moveTo(ctx, x, curve[i]);
       started = true;
       if (curve[i + 2] > curve[i + 1]) {
-        ctx.lineTo(x, bottom - k * (curve[i + 1] - lo));
-        ctx.lineTo(x, bottom - k * (curve[i + 2] - lo));
+        lineTo(ctx, x, curve[i + 1]);
+        lineTo(ctx, x, curve[i + 2]);
       }
-      ctx.lineTo(x, bottom - k * (curve[i + 3] - lo));
+      lineTo(ctx, x, curve[i + 3]);
     }
     ctx.stroke();
   }
@@ -148,11 +184,7 @@ export function createStrip() {
     psi0 = psi0Now;
     pole = path.pole;
     equator = path.equator;
-    for (let row = 0; row < 3; row++) {
-      curves[row].fill(NaN, 0, 4 * columns);
-      range[2 * row] = Infinity;
-      range[2 * row + 1] = -Infinity;
-    }
+    for (let row = 0; row < 3; row++) curves[row].fill(NaN, 0, 4 * columns);
     hues.fill(NaN, 0, columns);
     trace(path, head, length, collect, MOST_POINTS);
 
@@ -169,12 +201,9 @@ export function createStrip() {
       limits(row);
       const lo = range[2 * row];
       const k = (bottom - top) / (range[2 * row + 1] - lo);
-      // θ's ticks are fractions of π: the pole at 0 and the equator at π/2. φ's and ψ's, which can run to
-      // hundreds, are plain numbers, as on the paper's axes.
+      // The ticks are fractions of π. θ's mark the pole at 0 and the equator at π/2.
       const ticks = rowTicks[row];
-      const most = Math.max(3, Math.min(5, Math.floor(rowHeight / 28)));
-      if (row === 0) angleTicks(lo, range[1], most, ticks);
-      else linearTicks(lo, range[2 * row + 1], most - 1, ticks);
+      angleTicks(lo, range[2 * row + 1], Math.max(3, Math.min(5, Math.floor(rowHeight / 28))), ticks);
 
       // The row, its grid, and its ticks.
       ctx.fillStyle = colours.bg;
@@ -236,12 +265,17 @@ export function createStrip() {
       ctx.lineWidth = 1.75;
       ctx.lineJoin = 'round';
       ctx.strokeStyle = colours.curves[row];
-      stroke(ctx, curves[row], ratio, bottom, lo, k);
+      rowTop = top;
+      rowBottom = bottom;
+      rowLo = lo;
+      rowK = k;
+      wraps = wrapping(row);
+      stroke(ctx, curves[row], ratio);
       ctx.fillStyle = colours.curves[row];
       ctx.strokeStyle = colours.bg;
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.arc(LEFT + (columns - 0.5) / ratio, bottom - k * (curves[row][4 * columns - 1] - lo), 3.5, 0, 2 * PI);
+      ctx.arc(LEFT + (columns - 0.5) / ratio, Y(curves[row][4 * columns - 1]), 3.5, 0, 2 * PI);
       ctx.stroke();
       ctx.fill();
       ctx.restore();

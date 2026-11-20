@@ -1,8 +1,9 @@
 // The demo's entry point. Vite bundles it with the kit, three.js and the CSS into demo.js and demo.css.
 //
 // The controls, top to bottom: the presets, the spins, the momentum pad with its two sliders, and the trail's
-// length. A preset sets all of them, the photon's place and the camera. The stage holds the 3D view and, beside
-// it, the side panel, which plots the same trail.
+// length. A preset sets the spins and momenta, the photon's place, the colours and the direction the camera looks
+// from. The trail's length and the zoom stay as the visitor left them. The stage holds the 3D view and, beside it,
+// the side panel, which plots the same trail.
 
 import manifest from 'virtual:manifest';
 import { mount, select, slider } from '@mark-bugden/demo-kit';
@@ -54,12 +55,12 @@ const viewSize = { width: 0, height: 0 }; // of the 3D view, beside the panel
 let current = null; // { key, orbit, table, path, … }, or { key, orbit, … } with no path when there is no orbit
 let lam = 0; // the photon's λ
 let chi = 0; // and its χ, which keeps its place in the oscillation when the orbit changes
-let length = 0; // the trail's, in λ: a preset's exactly, until the slider (which rounds it) moves
+let length = 0; // the trail's, in λ: the opening's exactly, until the slider (which rounds it) moves
 let start = OPENING; // the preset last chosen: where Reset puts the photon back
 let psi0 = OPENING.psi0; // ψ at χ = 0, which sets the colours and the panel's ψ
 let phi0 = 0; // φ at χ = 0, for the panel's φ (the 3D view's is in its camera)
 let lam0 = 0; // the demo's λ at the paper's λ = 0, for the panel's λ axis
-let aim = OPENING.view; // a viewpoint to turn the camera to once the spheroid is drawn
+let aim = OPENING.view; // a viewpoint to turn the camera to once the view has its size
 let note = ''; // shown in the status line instead of the readout, until the next change
 let shown = null;
 let painted = null; // the theme the view's background was last painted for
@@ -77,7 +78,7 @@ const frame = mount({
   render: draw,
 });
 
-// Any change of the user's own makes the state custom, and clears the last note.
+// A change to the spins or momenta makes the state custom. Any change clears the last note.
 function custom(text = '') {
   controls.preset.value = null;
   note = text;
@@ -89,7 +90,7 @@ controls.spins.onChange(([a, b], { held }) => {
 controls.momenta.onChange((value, { stopped, axis }) => custom(stopped ? EDGE(axis === 'Phi' ? 'Φ' : 'Ψ') : ''));
 controls.trail.onChange((value) => {
   length = 10 ** value;
-  custom();
+  note = '';
 });
 controls.preset.onChange((preset) => preset && apply(preset));
 
@@ -99,17 +100,22 @@ function apply(preset) {
   controls.momenta.setSpins(a, b);
   controls.momenta.value = [Phi, Psi];
   current = solve(a, b, Phi, Psi);
-  view?.setShape(current.orbitAxes, current.horizonAxes);
+  if (view) shape(a, b);
   chi = span[1];
   lam = lamAt(current.path, chi);
-  length = lam - lamAt(current.path, span[0]);
-  controls.trail.value = Math.log10(length);
   start = preset;
   psi0 = preset.psi0;
   phi0 = preset.phi0 ?? 0;
   lam0 = preset.lam0 ?? 0;
   aim = preset.view;
   note = extremal(a, b) ? EXTREMAL : '';
+}
+
+// Shapes the 3D view for the current orbit, and shows each spin's arrow while that spin is non-zero: a's above the
+// spheroid, and b's round the colour wheel.
+function shape(a, b) {
+  view.setShape(current.orbitAxes, current.horizonAxes, a > 0);
+  legend.setSpin(b > 0);
 }
 
 // The orbit for these spins and momenta, its table and drawn path, and the semi-axes of its spheroid and the horizon's.
@@ -146,12 +152,11 @@ function draw({ pixelRatio, values, delta, theme, token }) {
   const key = [a, b, Phi, Psi].join();
   if (key !== current?.key) {
     current = solve(a, b, Phi, Psi);
-    view.setShape(current.orbitAxes, current.horizonAxes);
+    shape(a, b);
     if (current.path) lam = lamAt(current.path, chi);
   }
-  if (aim) {
-    view.setShape(current.orbitAxes, current.horizonAxes);
-    view.fit(aim);
+  if (aim && viewSize.width > 0) {
+    view.look(aim);
     aim = null;
   }
   if (current.path) {
@@ -194,6 +199,7 @@ function build() {
     reducedMotion: globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false,
   });
   legend = createLegend(box);
+  shape(...controls.spins.value);
   panel = createPanel({ onChange: () => frame.redraw() });
   layout.append(panel.el);
   new ResizeObserver(([entry]) => {
@@ -204,6 +210,8 @@ function build() {
 }
 
 apply(OPENING);
+length = lam - lamAt(current.path, OPENING.span[0]);
+controls.trail.value = Math.log10(length);
 try {
   build();
 } catch (error) {

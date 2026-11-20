@@ -1,16 +1,21 @@
-// The 3D view: the spheroids, the trail and the photon, a camera that turns about the hole, and its buttons.
+// The 3D view: the spheroids, the trail, the photon and the spin arrow, a camera that turns about the hole, and its
+// buttons.
 // Drag to turn it, or use the arrow keys; zoom with the buttons, by pinching, or with + and −. The mouse wheel
-// scrolls the page as usual.
+// scrolls the page as usual. The zoom is the visitor's: a preset turns the camera but keeps its distance, so the
+// spheroid's size on screen is its size in the scene. "Reset view" goes back to the default zoom.
 
 import { Color, Fog, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 import { createPath } from './path.js';
+import { createSpin } from './spin.js';
 import { BEHIND, createSurfaces } from './surfaces.js';
 
 const FOV = 30; // degrees, vertical
 const VIEWPOINT = new Vector3(1.3, -2.4, 2).normalize(); // Mathematica's default, until a preset sets another
-const MARGIN = 1.12; // room around the spheroid when the view fits it
+// The default zoom just fits a sphere of this radius, and so every orbit's spheroid: the largest, counter-rotating at
+// a or b = 0.99, reach 2.23. Every preset's, at most 1.73, has room above it for the spin arrow.
+const FRAME = 2.25;
 const ZOOM = 0.8; // each press of a zoom button
 const TURN = Math.PI / 24; // each press of an arrow key: 7.5°
 
@@ -33,7 +38,7 @@ function button(label, icon, action) {
 
 /**
  * Creates the view in `stage`. Throws if WebGL can't start. onChange() is called whenever the camera moves, so the
- * caller can draw again. Returns { setSize, setShape, fit, setBackground, showTrail, hideTrail, render }.
+ * caller can draw again. Returns { setSize, setShape, look, setBackground, showTrail, hideTrail, render }.
  */
 export function createView(stage, { onChange, reducedMotion = false }) {
   // The canvas is cleared to the stage's colour (setBackground) rather than left clear, so the page can't show
@@ -48,7 +53,8 @@ export function createView(stage, { onChange, reducedMotion = false }) {
   scene.fog = new Fog(BEHIND, 1, 10);
   const surfaces = createSurfaces();
   const path = createPath();
-  scene.add(surfaces.horizon, surfaces.orbit, path.group);
+  const spin = createSpin();
+  scene.add(surfaces.horizon, surfaces.orbit, path.group, spin.group);
 
   const camera = new PerspectiveCamera(FOV, 1, 0.01, 200);
   camera.up.set(0, 0, 1); // before the controls, which turn about camera.up
@@ -83,32 +89,37 @@ export function createView(stage, { onChange, reducedMotion = false }) {
     action();
   });
 
-  let radius = 1; // of the orbit's spheroid, or the horizon's if there is no orbit: what the view fits
+  let radius = 1; // of the orbit's spheroid, or the horizon's if there is no orbit
   let size = { width: 0, height: 0, pixelRatio: 0 };
   const home = VIEWPOINT.clone(); // the direction "Reset view" looks from
+  let placed = false; // whether the camera has been placed yet: until then it has no zoom to keep
 
-  // Turns the camera to look from home, or from [azimuth, elevation] in degrees, which becomes home, at the
-  // distance that fits the spheroid.
-  function fit(view) {
-    if (Array.isArray(view)) {
-      const [azimuth, elevation] = view.map((degrees) => (degrees * Math.PI) / 180);
-      home.set(Math.cos(elevation) * Math.cos(azimuth), Math.cos(elevation) * Math.sin(azimuth), Math.sin(elevation));
-    }
+  // The default zoom: the distance at which a sphere of radius FRAME just fills the view's narrower side.
+  function standard() {
     const half = (FOV * Math.PI) / 360;
     const across = Math.atan(Math.tan(half) * camera.aspect);
+    return FRAME / Math.sin(Math.min(half, across));
+  }
+
+  // Turns the camera to look from home at `distance` from the hole.
+  function place(distance) {
     const damping = controls.enableDamping;
     controls.enableDamping = false;
     controls.update(); // finishes any turn still easing out, so it can't carry on after the camera moves
-    camera.position.copy(home).multiplyScalar((MARGIN * radius) / Math.sin(Math.min(half, across)));
-    controls.target.set(0, 0, 0);
+    camera.position.copy(home).multiplyScalar(distance);
     controls.update();
     controls.enableDamping = damping;
+    placed = true;
     onChange();
   }
 
   const buttons = document.createElement('div');
   buttons.className = 'po-view-buttons';
-  buttons.append(button('Zoom in', 'in', zoomIn), button('Zoom out', 'out', zoomOut), button('Reset view', 'fit', fit));
+  buttons.append(
+    button('Zoom in', 'in', zoomIn),
+    button('Zoom out', 'out', zoomOut),
+    button('Reset view', 'fit', () => place(standard())),
+  );
   stage.append(canvas, buttons);
 
   return {
@@ -121,18 +132,26 @@ export function createView(stage, { onChange, reducedMotion = false }) {
       camera.aspect = Math.max(1, width) / Math.max(1, height);
       camera.updateProjectionMatrix();
     },
-    /** Shapes the spheroids, each given as its semi-axes [across, up], or null to hide the orbit's. */
-    setShape(orbitAxes, horizonAxes) {
+    /**
+     * Shapes the spheroids, each given as its semi-axes [across, up], or null to hide the orbit's, and shows the
+     * spin arrow on top while `spinning`, that is while a > 0.
+     */
+    setShape(orbitAxes, horizonAxes, spinning) {
       surfaces.setShape(orbitAxes, horizonAxes);
       if (orbitAxes) path.setSpheroid(orbitAxes);
       radius = Math.max(...(orbitAxes ?? horizonAxes));
       path.photon.scale.setScalar(0.022 * radius);
+      spin.setShape((orbitAxes ?? horizonAxes)[1], spinning);
     },
     /**
-     * Turns the camera to look from [azimuth, elevation], in degrees with z up, at the distance that fits the
-     * current spheroid; "Reset view" then comes back here. Without a view, it looks from the last one given.
+     * Turns the camera to look from [azimuth, elevation], in degrees with z up, keeping the visitor's zoom, or at
+     * the default zoom the first time. "Reset view" then comes back here, at the default zoom.
      */
-    fit,
+    look(view) {
+      const [azimuth, elevation] = view.map((degrees) => (degrees * Math.PI) / 180);
+      home.set(Math.cos(elevation) * Math.cos(azimuth), Math.cos(elevation) * Math.sin(azimuth), Math.sin(elevation));
+      place(placed ? camera.position.distanceTo(controls.target) : standard());
+    },
     /** Paints the background around the spheroid, e.g. the stage's colour for the theme. */
     setBackground(colour) {
       renderer.setClearColor(new Color(colour));
@@ -141,6 +160,7 @@ export function createView(stage, { onChange, reducedMotion = false }) {
     hideTrail: path.hide,
     render() {
       controls.update(); // settles the damping; calls onChange while the camera still moves
+      spin.face(camera);
       // Faint fog: none on the near side of the spheroid, about a third of the way to BEHIND on the far side.
       const distance = camera.position.distanceTo(controls.target);
       scene.fog.near = distance - 0.2 * radius;

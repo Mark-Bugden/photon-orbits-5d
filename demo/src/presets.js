@@ -1,10 +1,12 @@
 // The presets: the paper's figures, each matched to the figure itself, and two special holes.
 //
 // Each sets the spins and momenta, and:
-// - span: the stretch of path drawn, as [from, to] in the angle variable χ, which is 0 at θ_min and grows by 2π
-//   each oscillation. The photon starts at `to`, and the trail reaches back to `from`.
+// - span: the figure's stretch of path, as [from, to] in the angle variable χ, which is 0 at θ_min and grows by 2π
+//   each oscillation. The photon starts at `to`. The trail's length is the visitor's, so `from` only records the
+//   figure's, except for the opening state, whose trail reaches back to it.
 // - psi0: ψ at χ = 0, which sets the colours and the side panel's ψ.
-// - view: the camera's [azimuth, elevation] in degrees, about the hole, with z up.
+// - view: the direction the camera looks from, as [azimuth, elevation] in degrees about the hole, with z up. The
+//   zoom is the visitor's.
 // - lam0, phi0 (optional, 0 if left out): λ at the paper's λ = 0, and φ at χ = 0, so that the side panel's axes
 //   read as the paper's plots against λ. Only Figs 4.8 and 4.10 have them, from Figs 4.9 and 4.11. The 3D view
 //   needs no φ₀: it is in the camera's azimuth.
