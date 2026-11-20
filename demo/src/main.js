@@ -57,6 +57,7 @@ let lam = 0; // the photon's λ
 let chi = 0; // and its χ, which keeps its place in the oscillation when the orbit changes
 let length = 0; // the trail's, in λ: the opening's exactly, until the slider (which rounds it) moves
 let start = OPENING; // the preset last chosen: where Reset puts the photon back
+// The origins of ψ, φ and λ, which are arbitrary: a preset's, fitted to its figure, or 0 once the state is custom.
 let psi0 = OPENING.psi0; // ψ at χ = 0, which sets the colours and the panel's ψ
 let phi0 = 0; // φ at χ = 0, for the panel's φ (the 3D view's is in its camera)
 let lam0 = 0; // the demo's λ at the paper's λ = 0, for the panel's λ axis
@@ -78,9 +79,14 @@ const frame = mount({
   render: draw,
 });
 
-// A change to the spins or momenta makes the state custom. Any change clears the last note.
+// A change to the spins or momenta makes the state custom, with ψ, φ and λ all 0 at θ_min. So an orbit with Ψ = 0
+// around a hole with b = 0, where ψ stays put, is red, as in the paper's Figs 4.2 and 4.3 and in pictures of Kerr
+// orbits (Mark). Any change clears the last note.
 function custom(text = '') {
   controls.preset.value = null;
+  psi0 = 0;
+  phi0 = 0;
+  lam0 = 0;
   note = text;
 }
 controls.spins.onChange(([a, b], { held }) => {

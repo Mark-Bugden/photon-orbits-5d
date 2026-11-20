@@ -91,7 +91,8 @@ test('every fraction up to the edge is allowed, so the region is star-shaped as 
 
 test('every preset has an orbit, and the opening state is Fig 4.5 with three oscillations of trail', () => {
   const petals = PRESETS.find((preset) => preset.name === OPENING.name);
-  assert.ok(petals.name.startsWith('Fig 4.5'));
+  assert.ok(petals.name.startsWith('Figs 4.4, 4.5'));
+  assert.deepEqual(petals.view, [254.9, 33.5]); // Fig 4.5's
   assert.deepEqual({ ...OPENING, span: petals.span }, petals);
   assert.ok(Math.abs(OPENING.span[1] - OPENING.span[0] - 6 * Math.PI) < 1e-12);
   for (const preset of [...PRESETS, OPENING]) {

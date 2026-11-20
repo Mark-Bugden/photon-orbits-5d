@@ -1,4 +1,6 @@
-// The presets: the paper's figures, each matched to the figure itself, and two special holes.
+// The presets: the paper's figures, each matched to the figure itself, and two special holes. Figs 4.4 and 4.5 show
+// the same orbit, a short stretch and a long one, so now that the trail's length is the visitor's they share one
+// preset, with Fig 4.5's viewpoint and colours.
 //
 // Each sets the spins and momenta, and:
 // - span: the figure's stretch of path, as [from, to] in the angle variable χ, which is 0 at θ_min and grows by 2π
@@ -23,10 +25,9 @@ const DEFAULT_VIEW = [-61.56, 36.2]; // Mathematica's default viewpoint, (1.3, �
 export const PRESETS = [
   { name: 'Fig 4.2: zero momenta', a: 0.5, b: 0, Phi: 0, Psi: 0, span: [PI, 5 * PI], psi0: 0, view: [287.6, 18.1] },
   { name: 'Fig 4.3: Φ = 2', a: 0.5, b: 0, Phi: 2, Psi: 0, span: [4.765, 318.893], psi0: 0, view: [231, 12.3] },
-  { name: 'Fig 4.4: Φ = 0, Ψ = 0.5', a: 0.8, b: 0, Phi: 0, Psi: 0.5, span: [1.656, 14.67], psi0: 0.389, view: [19.2, 33.6] },
-  { name: 'Fig 4.5: the same, longer', a: 0.8, b: 0, Phi: 0, Psi: 0.5, span: [3.09, 170.017], psi0: 1.688, view: [254.9, 33.5] },
+  { name: 'Figs 4.4, 4.5: Φ = 0, Ψ = 0.5', a: 0.8, b: 0, Phi: 0, Psi: 0.5, span: [3.09, 170.017], psi0: 1.688, view: [254.9, 33.5] },
   { name: 'Fig 4.6: the “football”', a: 0, b: 0.99, Phi: 0, Psi: 0, span: [0, 4 * PI], psi0: 2.725, view: [21.2, 0] },
-  { name: 'Fig 4.7: two spins, a band', a: 0.6, b: 0.3, Phi: 1, Psi: -1, span: [3.523, 136.789], psi0: 3.434, view: [303.8, 22.8] },
+  { name: 'Fig 4.7: two spins', a: 0.6, b: 0.3, Phi: 1, Psi: -1, span: [3.523, 136.789], psi0: 3.434, view: [303.8, 22.8] },
   {
     name: 'Fig 4.8: cusps, extremal', a: 0.9, b: 0.1, Phi: 0.8, Psi: 0.8, span: [0, 33.696], psi0: 3.683, view: [104.1, 29.1],
     lam0: 0.076, phi0: 1.6122,
@@ -43,5 +44,5 @@ export const PRESETS = [
 
 // The opening state (Mark, 2026-11-20): Fig 4.5's orbit, moment, colours and viewpoint, with only the last three
 // oscillations of trail rather than the figure's 27.
-const PETALS = PRESETS.find((preset) => preset.name.startsWith('Fig 4.5'));
+const PETALS = PRESETS.find((preset) => preset.name.startsWith('Figs 4.4, 4.5'));
 export const OPENING = { ...PETALS, span: [PETALS.span[1] - 6 * PI, PETALS.span[1]] };
