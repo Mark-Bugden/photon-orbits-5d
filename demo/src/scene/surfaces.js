@@ -86,7 +86,7 @@ export function createSurfaces() {
   const shell = new Mesh(sphere, shaded(SURFACE.shell, SURFACE.rim, SURFACE.alpha));
   shell.scale.setScalar(INSIDE);
   shell.renderOrder = 10;
-  const ring = new LineSegments2(equator(), new LineMaterial({ color: SURFACE.ring, linewidth: 1.5, fog: true, alphaToCoverage: true }));
+  const ring = new LineSegments2(equator(), new LineMaterial({ color: SURFACE.ring, linewidth: 1.5, fog: true }));
   ring.scale.setScalar(1.002);
   const orbit = new Group().add(backdrop, ring, shell);
   const horizon = new Group().add(new Mesh(sphere, shaded(SURFACE.horizon, SURFACE.horizonRim, 1)));

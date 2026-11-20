@@ -2,7 +2,7 @@
 // Drag to turn it, or use the arrow keys; zoom with the buttons, by pinching, or with + and −. The mouse wheel
 // scrolls the page as usual.
 
-import { Fog, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three';
+import { Color, Fog, PerspectiveCamera, Scene, Vector3, WebGLRenderer } from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 import { createPath } from './path.js';
@@ -33,11 +33,12 @@ function button(label, icon, action) {
 
 /**
  * Creates the view in `stage`. Throws if WebGL can't start. onChange() is called whenever the camera moves, so the
- * caller can draw again. Returns { setSize, setShape, fit, showTrail, hideTrail, render }.
+ * caller can draw again. Returns { setSize, setShape, fit, setBackground, showTrail, hideTrail, render }.
  */
 export function createView(stage, { onChange, reducedMotion = false }) {
-  const renderer = new WebGLRenderer({ antialias: true, alpha: true, stencil: true }); // the stencil for the trail's casing
-  renderer.setClearColor(0x000000, 0); // the stage's own background shows around the spheroid
+  // The canvas is cleared to the stage's colour (setBackground) rather than left clear, so the page can't show
+  // through anything drawn with partial transparency.
+  const renderer = new WebGLRenderer({ antialias: true, stencil: true }); // the stencil for the trail's casing
   const canvas = renderer.domElement;
   canvas.className = 'po-canvas';
   canvas.tabIndex = 0;
@@ -121,6 +122,10 @@ export function createView(stage, { onChange, reducedMotion = false }) {
     },
     /** Turns the camera back to the paper's viewpoint, at the distance that fits the current spheroid. */
     fit,
+    /** Paints the background around the spheroid, e.g. the stage's colour for the theme. */
+    setBackground(colour) {
+      renderer.setClearColor(new Color(colour));
+    },
     showTrail: path.show,
     hideTrail: path.hide,
     render() {

@@ -44,6 +44,7 @@ let lam = 0; // the photon's λ
 let chi = 0; // and its χ, which keeps its place in the oscillation when the orbit changes
 let note = ''; // shown in the status line instead of the readout, until the next change
 let shown = null;
+let painted = null; // the theme the view's background was last painted for
 
 const frame = mount({
   el: document.querySelector(`[data-demo="${manifest.slug}"]`),
@@ -92,9 +93,13 @@ function readout({ orbit, table }) {
   return `r = ${Math.sqrt(orbit.x).toFixed(2)} · θ from ${low}° to ${high}° · per swing: φ ${signed(turnsPhi)} turns, ψ ${signed(turnsPsi)} turns`;
 }
 
-function draw({ width, height, pixelRatio, values, delta }) {
+function draw({ width, height, pixelRatio, values, delta, theme, token }) {
   if (!view) return;
   view.setSize(width, height, pixelRatio);
+  if (theme !== painted) {
+    view.setBackground(token('--color-surface'));
+    painted = theme;
+  }
   const key = [values.a, values.b, values.Phi, values.Psi].join();
   if (key !== current?.key) {
     const first = current === null;

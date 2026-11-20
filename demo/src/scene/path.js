@@ -5,6 +5,10 @@
 // The line is drawn first and marks its pixels in the stencil buffer, and the casing is drawn only where it
 // isn't. A depth offset can't do this: each step's round end caps are flat in depth, so where a step heads away
 // from the camera, the next step's casing cap sits in front of the line it overlaps, and the line looks dashed.
+//
+// The lines are smoothed by multisampling alone, without alphaToCoverage: three's canvas always keeps an alpha
+// channel, and the soft rims that alphaToCoverage gives the round ends are written as partial transparency, which
+// let a light page show through as faint rings at every joint.
 
 import {
   AlwaysStencilFunc, BackSide, Color, DynamicDrawUsage, Group, InstancedInterleavedBuffer, InterleavedBufferAttribute,
@@ -52,11 +56,11 @@ export function createPath() {
   geometry.instanceCount = 0;
 
   const line = new LineSegments2(geometry, new LineMaterial({
-    vertexColors: true, linewidth: WIDTH, fog: true, alphaToCoverage: true,
+    vertexColors: true, linewidth: WIDTH, fog: true,
     stencilWrite: true, stencilRef: 1, stencilFunc: AlwaysStencilFunc, stencilZPass: ReplaceStencilOp,
   }));
   const casing = new LineSegments2(geometry, new LineMaterial({
-    color: 0x07090c, linewidth: WIDTH + 2 * CASING, fog: true, alphaToCoverage: true,
+    color: 0x07090c, linewidth: WIDTH + 2 * CASING, fog: true,
     stencilWrite: true, stencilRef: 1, stencilFunc: NotEqualStencilFunc,
   }));
   line.renderOrder = 2;
