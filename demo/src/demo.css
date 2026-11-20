@@ -2,16 +2,36 @@
  * The stage fits the window. On wide frames it keeps the manifest's height, but shrinks so that the whole frame
  * (the stage, then the status line and "How this works", 6.5rem) fits in the window, down to 22rem. On the site,
  * the window is what the page leaves below its title (--dk-fit-height, which the site sets); standalone, it is the
- * whole window.
+ * whole window. The stage holds the 3D view and, beside it, the side panel.
  *
- * On phones the 3D view comes first and the controls below it, so the orbit is what a visitor sees. The stage is
- * square rather than the kit's 16:9, up to 70% of the window, so the page can still be scrolled around it:
- * dragging on the 3D view turns the view, not the page.
+ * On phones the 3D view comes first and the controls below it, so the orbit is what a visitor sees. The 3D view
+ * is square rather than the kit's 16:9, up to 70% of the window, so the page can still be scrolled around it:
+ * dragging on the 3D view turns the view, not the page. The side panel goes below the 3D view.
  */
 @container (min-width: 48rem) {
   [data-demo] .dk-stage {
     height: max(22rem, min(var(--dk-stage-height), var(--dk-fit-height, 100dvh) - 6.5rem));
   }
+}
+
+[data-demo] .po-layout {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+[data-demo] .po-view {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+[data-demo] .po-panel {
+  display: flex;
+  flex: 0 0 clamp(15rem, 38%, 24rem);
+  flex-direction: column;
+  min-width: 0;
+  border-left: 1px solid var(--color-border);
 }
 
 @container (max-width: 47.99rem) {
@@ -20,9 +40,75 @@
   }
 
   [data-demo] .dk-stage {
-    height: min(100cqw, 0.7 * var(--dk-fit-height, 100dvh));
+    height: auto;
     aspect-ratio: auto;
   }
+
+  [data-demo] .po-layout {
+    flex-direction: column;
+  }
+
+  [data-demo] .po-view {
+    flex: none;
+    height: min(100cqw, 0.7 * var(--dk-fit-height, 100dvh));
+  }
+
+  [data-demo] .po-panel {
+    flex: none;
+    height: 20rem;
+    border-top: 1px solid var(--color-border);
+    border-left: 0;
+  }
+}
+
+/* The side panel's tabs, over its plot. */
+[data-demo] .po-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0 var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+}
+
+[data-demo] .po-tab {
+  min-height: 2.5rem;
+  margin-bottom: -1px;
+  padding: 0 var(--space-2);
+  color: var(--color-muted);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-strong);
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+}
+
+[data-demo] .po-tab:hover {
+  color: var(--color-text);
+}
+
+[data-demo] .po-tab[aria-selected="true"] {
+  color: var(--color-text);
+  border-bottom-color: var(--color-accent);
+}
+
+[data-demo] .po-tab:focus-visible {
+  outline-offset: -2px;
+}
+
+[data-demo] .po-panel-body {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+[data-demo] .po-panel-canvas {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-2);
+  display: block;
+  width: calc(100% - var(--space-2) - var(--space-3));
+  height: calc(100% - var(--space-3) - var(--space-2));
 }
 
 [data-demo] .po-canvas {

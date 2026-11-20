@@ -3,7 +3,7 @@ import { test } from 'node:test';
 
 import { WHEEL, WHEEL_SIZE, hue, wheelIndex } from '../src/colour.js';
 import { embed, solveOrbit, tabulate } from '../src/physics/index.js';
-import { BASE_STEPS, MAX_TURN, chiAt, fill, lamAt, locate, refine } from '../src/trail.js';
+import { BASE_STEPS, MAX_TURN, chiAt, fill, lamAt, locate, refine, trace } from '../src/trail.js';
 
 const TWO_PI = 2 * Math.PI;
 
@@ -68,10 +68,81 @@ for (const [name, args] of Object.entries(CASES)) {
       for (let c = 0; c < 3; c++) {
         assert.ok(Math.abs(positions[6 * s + c] - expected[c]) < 1e-6, `${'xyz'[c]} at point ${g}: ${positions[6 * s + c]} vs ${expected[c]}`);
       }
-      assert.ok(Math.abs(psis[2 * s - 1] - (path.psi[k] + m * path.advance)) < 1e-9, `ψ at point ${g}`); // painted as the end of segment s − 1
+      assert.ok(Math.abs(psis[2 * s - 1] - (path.psi[k] + m * path.psiAdvance)) < 1e-9, `ψ at point ${g}`); // painted as the end of segment s − 1
     }
   });
+
+  test(`the panel's angles are the picture's, and run on smoothly through the axes: ${name}`, () => {
+    const { orbit, path } = prepare(args);
+    // The same stretch, as fill() draws it and as trace() visits it: the same points, in the same order.
+    const head = 2.3 * path.period;
+    const length = 5 * path.period;
+    const positions = new Float32Array(6 * 20 * path.count);
+    const photon = [0, 0, 0, 0];
+    const segments = fill(path, head, length, positions, new Float32Array(positions.length), () => {}, photon);
+    const visits = [];
+    trace(path, head, length, (lam, theta, phi, psi) => visits.push([lam, theta, phi, psi]));
+    assert.equal(visits.length, segments + 1);
+    assert.ok(Math.abs(visits[0][0] - (head - length)) < 1e-9, 'from the tail');
+    assert.ok(Math.abs(visits.at(-1)[0] - head) < 1e-9, 'to the photon');
+    assert.ok(Math.abs(visits.at(-1)[3] - photon[3]) < 1e-9, 'with the photon\'s ψ');
+    const across = Math.sqrt(orbit.x + orbit.a ** 2);
+    const up = Math.sqrt(orbit.x + orbit.b ** 2);
+    visits.forEach(([, theta, phi], s) => {
+      // Signed θ and unwrapped φ put each point where the picture does, turned through the axes and all. The two
+      // ends fall between points, where fill() interpolates the position and trace() the angles: a step's chord
+      // and its arc, at most 10° apart.
+      const at = 6 * Math.min(s, segments - 1) + (s === segments ? 3 : 0);
+      const tolerance = s === 0 || s === segments ? 0.01 : 1e-6;
+      const expected = [across * Math.sin(theta) * Math.cos(phi), across * Math.sin(theta) * Math.sin(phi), up * Math.cos(theta)];
+      expected.forEach((value, c) => assert.ok(Math.abs(positions[at + c] - value) < tolerance, `${'xyz'[c]} at visit ${s}: ${positions[at + c]} vs ${value}`));
+    });
+    for (let s = 1; s < visits.length; s++) {
+      const [lam0, theta0, phi0, psi0] = visits[s - 1];
+      const [lam1, theta1, phi1, psi1] = visits[s];
+      assert.ok(lam1 >= lam0, `λ increases at ${s}`);
+      assert.ok(Math.abs(theta1 - theta0) < 0.1, `θ is continuous at ${s}: ${theta0} to ${theta1}`);
+      assert.ok(Math.abs(phi1 - phi0) <= MAX_TURN + 1e-12 && Math.abs(psi1 - psi0) <= MAX_TURN + 1e-12, `φ and ψ at ${s}`);
+    }
+    const thetas = visits.map(([, theta]) => theta);
+    const [low, high] = path.band;
+    if (path.pole && path.equator) assert.ok(Math.max(...thetas) - Math.min(...thetas) > 4 * Math.PI, 'θ = χ/2 grows');
+    else if (path.pole) assert.ok(Math.abs(Math.min(...thetas) + high) < 1e-3 && Math.abs(Math.max(...thetas) - high) < 1e-3, 'θ swings from −θ_max to θ_max');
+    else if (path.equator) assert.ok(Math.abs(Math.min(...thetas) - low) < 1e-3 && Math.abs(Math.max(...thetas) - (Math.PI - low)) < 1e-3, 'θ swings from θ_min to π − θ_min');
+    else assert.ok(Math.min(...thetas) >= low - 1e-9 && Math.max(...thetas) <= high + 1e-9, 'θ stays in its band');
+  });
 }
+
+test('a trail with too many points is visited evenly, from its tail to the photon', () => {
+  const { path } = prepare(CASES['near the extremal edge, φ winding fast']);
+  const head = 1000;
+  const length = 300;
+  const all = [];
+  trace(path, head, length, (lam) => all.push(lam));
+  const some = [];
+  trace(path, head, length, (lam) => some.push(lam), 20000);
+  assert.ok(all.length > 100000, `${all.length} points`);
+  assert.ok(some.length <= 20002 && some.length > 15000, `${some.length} visited`);
+  assert.equal(some[0], all[0]);
+  assert.equal(some.at(-1), all.at(-1));
+  for (let k = 1; k < some.length; k++) assert.ok(some[k] >= some[k - 1]);
+  // A trail within the budget is visited in full.
+  const fig = prepare(CASES['Fig 4.10, near both axes']).path;
+  const count = (most) => {
+    let n = 0;
+    trace(fig, head, length, () => n++, most);
+    return n;
+  };
+  assert.equal(count(20000), count(Infinity));
+});
+
+test('the band is the orbit\'s', () => {
+  const { orbit, path } = prepare(CASES['Fig 4.7']);
+  assert.ok(Math.abs(Math.sin(path.band[0]) ** 2 - orbit.y1) < 1e-12);
+  assert.ok(Math.abs(Math.cos(path.band[1]) ** 2 - orbit.w2) < 1e-12);
+  assert.deepEqual(prepare(CASES['through the pole (Fig 4.4)']).path.band[0], 0);
+  assert.ok(Math.abs(prepare(CASES['through the equator']).path.band[1] - Math.PI / 2) < 1e-12);
+});
 
 test('the trail runs from its tail to the photon, and fades from 0 to 1 along it', () => {
   const { orbit, path } = prepare(CASES['Fig 4.7']);
@@ -157,4 +228,15 @@ test('fills a long trail quickly enough for every frame', (t) => {
   const each = (performance.now() - began) / repeats;
   t.diagnostic(`${segments} segments (${path.count} per oscillation): ${each.toFixed(2)} ms a frame`);
   assert.ok(each < 16);
+
+  // And the panel's walk along the same trail.
+  let sum = 0;
+  const visit = (lam, theta, phi, psi) => {
+    sum += theta + phi + psi;
+  };
+  const start = performance.now();
+  for (let r = 0; r < repeats; r++) trace(path, 1000 + r, 300, visit);
+  const traced = (performance.now() - start) / repeats;
+  t.diagnostic(`trace: ${traced.toFixed(2)} ms a frame (${Number.isFinite(sum)})`);
+  assert.ok(traced < 16);
 });
