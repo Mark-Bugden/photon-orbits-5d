@@ -108,11 +108,11 @@ Everything else checks out exactly, and the figure parameters reproduce every fi
 | --- | --- |
 | Spins | Sliders for a and b, each from 0 to 0.99, held to a + b ≤ 1: beyond that there is no horizon. When a slider stops, the status line says why. Negative spins only mirror the picture, so they're left out. |
 | Extremal black holes | When a + b = 1, an "Extremal" label appears beside the spin sliders, and the status line says why it is special: the inner and outer horizons have merged, and the hole spins as fast as a black hole of its mass can. The Fig 4.8 preset is extremal. |
-| Momenta | A square pad in the controls rail: Φ across and Ψ up, on fixed axes from −3 to 3, so the region visibly reshapes as the spins change. The allowed region is shaded, optionally tinted by the orbit's radius, and the current orbit is a dot to drag. With spin, the halves are labelled "with the spin" and "against it". Below the pad, sliders for Φ and Ψ give fine and keyboard control; each stops at the region's edge. When a or b changes, the dot keeps its direction from the origin and its fraction of the way to the edge, so the orbit keeps its character as the region changes shape. |
+| Momenta | A square pad in the controls rail: Φ across and Ψ up, on fixed axes from −3 to 3, so the region visibly reshapes as the spins change. The allowed region is tinted by the orbit's radius, darker for orbits closer in, with a key in the pad's corner (Mark, 2026-11-20), and the current orbit is a dot to drag. With spin, the halves are labelled "with a" and "against a", and "with b" and "against b". Below the pad, sliders for Φ and Ψ give fine and keyboard control; each stops at the region's edge. When a or b changes, the dot keeps its direction from the origin and its fraction of the way to the edge, so the orbit keeps its character as the region changes shape. |
 | Trail | A "Trail length" slider in λ, on a log scale from about one oscillation (λ ≈ 3) to about 100 (λ ≈ 300). The trail fades towards its tail. |
 | Animation | Play/Pause and Reset come from the kit. The photon moves at a steady rate in λ, about one oscillation every 1.5 s. A change to any control keeps the photon's place in its oscillation and redraws its past path for the new orbit at once, so the trail is never empty. The animation starts paused under reduced motion. |
-| Presets | The paper's figures: 4.2, 4.3, 4.4/4.5, 4.6, 4.7, 4.8/4.9, 4.10/4.11 and 4.12. Also "Equal spins (a = b)", where every orbit's radius depends only on Φ + Ψ, and "No spin", the Tangherlini case, where every orbit is a great circle with r = √2. Each preset sets a, b, Φ, Ψ, the trail length, the starting point and the camera, from [paper review §B5](research/paper-review.md#b5-presets-reproducing-figs-42412). |
-| Opening state | One of the presets, chosen in step 3 for the most striking first view. Candidates: Fig 4.10's flower, or Fig 4.4/4.5's petals. |
+| Presets | A drop-down: the paper's Figs 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8 and 4.10 (4.9 and 4.11 plot the same orbits against λ) and 4.12. Also "Equal spins (a = b)", where every orbit's radius depends only on Φ + Ψ, and "No spin", the Tangherlini case, where every orbit is a great circle with r = √2. Each preset sets a, b, Φ, Ψ, the trail length, the starting point, the colours and the camera, fitted to the figure's image ([research/scripts/presets/](research/scripts/presets/)). Any change of the visitor's own shows "Custom". Reset puts the photon back where the last preset started it. |
+| Opening state | Fig 4.5's orbit, moment, colours and viewpoint, with three oscillations of trail rather than the figure's 27 (Mark, 2026-11-20). The drop-down shows Fig 4.5. |
 | 3D view | Drag to rotate. Zoom with buttons and pinch, while the mouse wheel keeps scrolling the page. A "Reset view" button. |
 | Side panel | θ, φ and ψ against λ over the visible trail, as in Figs 4.9 and 4.11. A cursor marks the photon, and dashed lines mark the band's edges, θ₋ and θ₊. φ and ψ are unwrapped, as in the paper. A second tab shows the (φ, ψ) torus: a square in which the path wraps around. It shows ψ without colour and makes quasiperiodicity visible. |
 | Readouts | The status line gives r, the θ band and the advance per oscillation in turns, for example "r = 1.32 · θ from 37.6° to 51.5° · per swing: φ +0.34 turns, ψ −0.61 turns". If the dot ever lands outside the region, it says "No spherical orbit for these momenta". |
@@ -173,6 +173,9 @@ demo/                  the site bundle, built with demo-kit (see the site contra
   src/physics/         pure functions: horizon, solver, band, region, one-oscillation table, frequencies
   src/scene/           three.js: spheroids, path, photon, camera
   src/pad.js           the momentum pad, a control with the kit's shape ({ el, value, onChange })
+  src/momenta.js       the pad's geometry: where the region ends, and where the dot goes when the spins change
+  src/spins.js         the spin sliders, held to a + b ≤ 1, with the "Extremal" label
+  src/presets.js       the presets and the opening state
   src/panel/           the side panel and the colour legend (2D canvas)
   src/colour.js        the paper's colour wheel
   src/trail.js         the path ready to draw: one oscillation refined, and the trail's window of it
@@ -222,16 +225,23 @@ pyproject.toml         a uv project; commit uv.lock
   - the longest trail plays at 60 frames a second.
 - [x] **Phones, early:** with emulated touch, a swipe on the 3D view turns it and doesn't scroll the page; a swipe anywhere else scrolls. On phones the 3D view now comes first, above the controls, and is square, at most 70% of the window's height, so there is always page to scroll by. Still to try on a real phone.
 
-### 3. Momentum pad and presets (PR)
-- [ ] The pad:
-  - the region by ray bisection;
+### 3. Momentum pad and presets (PR, then release `v0.3.0`)
+- [x] The pad (`demo/src/pad.js`, its geometry in `demo/src/momenta.js`):
+  - the region by ray bisection, tinted by the orbit's radius;
   - direction-and-fraction memory when the spins change;
-  - snapping to the Φ = 0 and Ψ = 0 axes;
-  - linked Φ and Ψ sliders, and arrow keys to move the dot.
-- [ ] Presets for every figure. Check each side by side with the paper and with `research/scripts/figures_repro.png`.
-- [ ] Choose the opening state.
-- [ ] The status-line readouts, the out-of-region message, and the extremal label.
-- [ ] The colour legend ring.
+  - snapping to the Φ = 0 and Ψ = 0 axes, within 6 pixels;
+  - linked Φ and Ψ sliders, and arrow keys to move the dot (Shift for steps of 0.1). Each stops at the edge, and the status line says why.
+
+  A point dragged outside the region goes to the edge along its ray from the origin. At an extremal hole the dot stops at 1 + Φ + Ψ = 10⁻⁴, short of the edge, where φ winds about 21 turns per oscillation. In a short window the pad shrinks, so the rail still fits beside the stage: it is 161 px across at 1366×657.
+- [x] Presets for every figure, fitted to the paper's images ([research/scripts/presets/](research/scripts/presets/)) and checked side by side with them in Edge. They match strand for strand, colours included. What the fits found:
+  - **The twist is real.** For Fig 4.10, the camera that matches the figure's box axes is the fitted one only once the arctan(a/r) twist is allowed for.
+  - **Fig 4.8's colours are about π from Fig 4.9's ψ curve,** so that preset follows Fig 4.8.
+  - **Fig 4.3 draws its sphere smaller than the orbit's spheroid,** so the red net bulges past the outline at the equator.
+  - **Figs 4.4 and 4.5 are separate presets.** They are the same orbit, but different stretches seen from different sides.
+- [x] The opening state: Fig 4.5 with three oscillations of trail (Mark chose it from pictures, 2026-11-20).
+- [x] The extremal label, with the status line's reason. The readout and the out-of-region message were done in milestone 2.
+- [x] The colour legend ring, top left of the 3D view, with a marker at the photon's ψ.
+- [x] Checked in Edge, with no console errors: standalone and embedded with `--dk-fit-height`, both themes, phone width; dragging, snapping, the sliders' stops, the keys, the spins' memory, the extremal hold, presets and Reset. On a phone, a drag on the pad moves the dot and doesn't scroll the page. Moving a spin slider redraws the pad in about 16 ms; the longest trail near the extremal edge plays at 60 frames a second.
 
 ### 4. Side panel (PR)
 - [ ] The θ, φ, ψ strip against λ. The (φ, ψ) torus tab.
@@ -273,12 +283,14 @@ Settled with Mark on 2026-11-20. The comparison page, <https://claude.ai/artifac
 | demo-kit | v0.5.0. |
 | Errata | Whether to post a corrected arXiv version is decided later. |
 | Blue strands | No light edge: blue is dim against the spheroid (1.6–1.7:1) but reads by hue (step 2). |
+| Opening state | Fig 4.5's orbit and viewpoint, with three oscillations of trail (step 3). |
+| The pad's region | Tinted by the orbit's radius (step 3). |
 
 ## Risks
 
 - **Phones.** Dragging to rotate competes with scrolling the page. Tested in step 2 with emulated touch: the page scrolls everywhere but on the 3D view, which is at most 70% of the window's height. Still to try on a real phone. The fallback is two-finger rotation on touch screens.
-- **The pad on narrow screens.** On phones, the controls rail stacks below the stage (since step 2), and the pad must stay usable at about 280 px.
+- **The pad on narrow screens.** On phones, the controls rail stacks below the stage (since step 2), and the pad is as wide as the rail, up to 320 px. Beside the stage on a short desktop window it shrinks, down to 144 px.
 - **Orbits near an axis.** φ or ψ can swing by about π within one step, which would smear the colour. Subdivision handles it, and Fig 4.10 is the test case.
-- **Orbits near the extremal co-rotating edge** wind φ and ψ by tens of turns per oscillation: about 21 at a = b = 0.5, 1 + Φ + Ψ = 10⁻⁴. The path must subdivide by φ as well as ψ. The pad might stop the dot just short of that edge.
+- **Orbits near the extremal co-rotating edge** wind φ and ψ by tens of turns per oscillation: about 21 at a = b = 0.5, 1 + Φ + Ψ = 10⁻⁴. The path must subdivide by φ as well as ψ. The pad stops the dot at 1 + Φ + Ψ = 10⁻⁴ (step 3).
 - **The one-orbit result** is numerical. The solver is written defensively, and logs if it ever finds a second root.
 - **Size.** About 0.6 MB of the 2 MB budget, so there is room.

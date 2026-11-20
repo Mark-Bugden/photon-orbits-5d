@@ -7,7 +7,7 @@ The interactive demo for this project. It is built with [demo-kit](https://githu
 ```sh
 npm install
 npm run dev
-npm test          # node:test: the physics, against the reference model's fixtures, and the drawn path
+npm test          # node:test: the physics, against the reference model's fixtures, the drawn path and the pad's geometry
 ```
 
 ## Build and check the bundle
@@ -26,7 +26,11 @@ The files to edit:
 | --- | --- |
 | `public/manifest.json` | The demo's metadata. |
 | `src/main.js` | The controls, the animation clock, the status line and the `mount()` call. |
+| `src/pad.js`, `src/momenta.js` | The momentum pad, and its geometry: where the allowed region ends, and where the dot goes when the spins change. `test/momenta.test.js` checks the geometry. |
+| `src/spins.js` | The spin sliders, held to a + b ≤ 1, with the "Extremal" label. |
+| `src/presets.js` | The presets and the opening state. The figures' values were fitted to the paper's images by `../docs/research/scripts/presets/`. |
 | `src/scene/` | The 3D view, with three.js: the spheroids, the trail, the photon and the camera. |
+| `src/panel/` | The colour legend, drawn over the 3D view. |
 | `src/trail.js`, `src/colour.js` | The path ready to draw, and the paper's colour wheel. `test/trail.test.js` checks them. |
 | `src/physics/` | The orbits: a port of the Python reference model in `../src/photon_orbits/`, explained in `../docs/equations.md`. Change both together and regenerate `../tests/fixtures/orbits.json`, which `test/physics.test.js` replays. |
 | `public/data/`, `public/model/` | Runtime files. |

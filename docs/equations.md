@@ -354,7 +354,7 @@ As $\mathcal E_+ \to 0$, $A_\phi$ and $A_\psi$ grow like $1/(x - x_+)$, so near 
 | 0.5, 0.5 | $10^{-4}$ | about 21 |
 | 0.7, 0.3 | $10^{-5}$ | about 68 |
 
-The drawing subdivides by $\phi$ as well as $\psi$ there (§6, "Between the nodes"). The pad (milestone 3) may want to stop the dot just short of this edge.
+The drawing subdivides by $\phi$ as well as $\psi$ there (§6, "Between the nodes"). The pad (`demo/src/momenta.js`) stops the dot at $1 + \Phi + \Psi = 10^{-4}$, where $\phi$ turns about 21 times per oscillation.
 
 ## 9. Guards and tolerances
 
