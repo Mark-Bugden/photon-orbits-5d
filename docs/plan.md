@@ -133,7 +133,7 @@ Everything else checks out exactly, and the figure parameters reproduce every fi
   - **Known limits** (measured for the comparison page, <https://claude.ai/artifact/H3VwXgAEs8gpsK1A31fqcv>):
     - about 12% of the wheel, the deep blue around ψ = 4π/3, is dim against the black sphere. Check in step 2 whether the path needs a faint light edge there.
 
-      **Measured in step 2:** against the drawn spheroid, pure blue is 1.6–1.7:1, below WCAG's 3:1 for lines; red is 3.4:1, magenta 4.3:1, and green, cyan and yellow 10:1 or more. The blue strands still stand out by hue, so step 2 adds no light edge. Mark to decide.
+      **Measured in step 2:** against the drawn spheroid, pure blue is 1.6–1.7:1, below WCAG's 3:1 for lines; red is 3.4:1, magenta 4.3:1, and green, cyan and yellow 10:1 or more. The blue strands still stand out by hue. Mark looked at a side-by-side comparison and decided on no light edge (2026-11-20).
     - Opposite angles are less distinct for red-green colour-blind viewers. The torus tab shows ψ by position, so colour is never the only way to read it.
 - **Colour legend.** A ring in a corner of the 3D view, labelled 0, π/2, π and 3π/2, with a needle at the photon's current ψ.
 - **The page's colours** come from the kit v0.5.0 tokens.
@@ -209,7 +209,9 @@ pyproject.toml         a uv project; commit uv.lock
   - the spheroids and equator ring;
   - the path coloured by ψ, the photon, the trail, and the animation clock.
 
-  The spheroid is drawn as two shells either side of the path: an opaque backdrop just outside, for the far half, and a translucent shaded shell just inside, over the near half. So nothing behind the spheroid shows through it, and it looks the same in both themes. The casing is drawn only where the coloured line isn't, using the stencil buffer. A depth offset left the line looking dashed, because each step's round end caps are flat in depth.
+  The spheroid is drawn as two shells either side of the path: an opaque backdrop just outside, for the far half, and a translucent shaded shell just inside, over the near half. So nothing behind the spheroid shows through it, and it looks the same in both themes.
+
+  The trail is drawn in time order, in two passes: the steps on the spheroid's far face, then those on its near face. Each step draws its dark edge and its colour together, so where strands cross, the newer one passes cleanly over the older, edge and all. Crossing strands lie at the same depth, so a depth test between them gave jagged crossings with no edge between the strands; and an edge drawn as a separate, wider line made the trail look dashed at every joint. The near/far split comes from the spheroid's outward normal at each step, so it costs nothing extra: the same two passes as before, and the same work per frame (measured: 2.7 ms before, 2.65 ms after, on the longest trail).
 - [x] Temporary sliders for a, b, Φ and Ψ, and the "Trail length" slider. The opening state is Fig 4.10 until step 3 chooses one.
 - [x] Camera controls, both themes, fitting the window, `needsWebGL`. Drag, or the arrow keys, to turn; the buttons, pinching, or + and − to zoom; "Reset view" goes back to the paper's viewpoint, fitted to the current spheroid. The zoom stays put when the orbit changes, so the spheroid visibly grows and shrinks.
 - [x] Check in Edge (headless, through Playwright), with no console errors:
@@ -270,6 +272,7 @@ Settled with Mark on 2026-11-20. The comparison page, <https://claude.ai/artifac
 | Clock | λ only: the animation, the trail length and the side panel all use it. |
 | demo-kit | v0.5.0. |
 | Errata | Whether to post a corrected arXiv version is decided later. |
+| Blue strands | No light edge: blue is dim against the spheroid (1.6–1.7:1) but reads by hue (step 2). |
 
 ## Risks
 

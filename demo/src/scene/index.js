@@ -38,7 +38,7 @@ function button(label, icon, action) {
 export function createView(stage, { onChange, reducedMotion = false }) {
   // The canvas is cleared to the stage's colour (setBackground) rather than left clear, so the page can't show
   // through anything drawn with partial transparency.
-  const renderer = new WebGLRenderer({ antialias: true, stencil: true }); // the stencil for the trail's casing
+  const renderer = new WebGLRenderer({ antialias: true });
   const canvas = renderer.domElement;
   canvas.className = 'po-canvas';
   canvas.tabIndex = 0;
@@ -117,6 +117,7 @@ export function createView(stage, { onChange, reducedMotion = false }) {
     /** Shapes the spheroids, each given as its semi-axes [across, up], or null to hide the orbit's. */
     setShape(orbitAxes, horizonAxes) {
       surfaces.setShape(orbitAxes, horizonAxes);
+      if (orbitAxes) path.setSpheroid(orbitAxes);
       radius = Math.max(...(orbitAxes ?? horizonAxes));
       path.photon.scale.setScalar(0.022 * radius);
     },
