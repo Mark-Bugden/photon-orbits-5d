@@ -10,9 +10,10 @@ export const AXIS_NEAR = 1e-4; // a band within this of an axis, in sin²θ or c
 export const stepsFor = (orbit) => (Math.min(orbit.y1, orbit.w2) < AXIS_NEAR ? 512 : 256);
 
 /**
- * ∫₀^χ dχ′ / (at0 + (atpi − at0) sin²(χ′/2)) at the node χ = 2πi/n (n even), for at0, atpi > 0: the closed form
- * (2/√(at0·atpi)) arctan(k tan(χ/2)), k = √(atpi/at0), evaluated from the node's index so that the values at
- * 0, π and 2π are exact even when the integrand is a spike of width ~1e-12 there.
+ * ∫₀^χ dχ′ / (at0 + (atpi − at0) sin²(χ′/2)) at χ = 2πi/n (n even, 0 ≤ i ≤ n), for at0, atpi > 0: the closed form
+ * (2/√(at0·atpi)) arctan(k tan(χ/2)), k = √(atpi/at0), evaluated from the index i so that the values at
+ * 0, π and 2π are exact even when the integrand is a spike of width ~1e-12 there. i need not be an integer:
+ * between uses it between the nodes.
  */
 export function axisIntegral(at0, atpi, i, n) {
   const scale = 2 / Math.sqrt(at0 * atpi);
@@ -90,6 +91,43 @@ export function node(table, i) {
     lam: table.lam[j] + m * table.lam[n],
     phi: table.phi[j] + m * table.phi[n],
     psi: table.psi[j] + m * table.psi[n],
+  };
+}
+
+/**
+ * { chi, sigma, lam, phi, psi } at χ = (i + t)·2π/n, a fraction 0 ≤ t ≤ 1 of the way from node i to node i + 1:
+ * one Simpson step of width t·h from node i, with the axis terms in closed form. It is node i at t = 0 and meets
+ * node i + 1 at t = 1. Near an axis φ or ψ swings by about π between two nodes, and this follows the swing, so
+ * the drawing can subdivide it.
+ */
+export function between(orbit, table, i, t) {
+  const { n } = table;
+  const m = Math.floor(i / n);
+  const j = i - m * n;
+  const h = TWO_PI / n;
+  const chi = (j + t) * h;
+  const f0 = rates(orbit, j * h);
+  const f1 = rates(orbit, (j + 0.5 * t) * h);
+  const f2 = rates(orbit, chi);
+  const [sigma, lam, phi0, psi0] = [table.sigma, table.lam, table.phi, table.psi].map(
+    (column, k) => column[j] + ((t * h) / 6) * (f0[k] + 4 * f1[k] + f2[k]),
+  );
+  let phi = phi0;
+  let psi = psi0;
+  if (orbit.Phi !== 0) {
+    const scale = orbit.Phi / (2 * Math.sqrt(orbit.G1));
+    phi += scale * (axisIntegral(orbit.y1, orbit.y2, j + t, n) - axisIntegral(orbit.y1, orbit.y2, j, n));
+  }
+  if (orbit.Psi !== 0) {
+    const scale = orbit.Psi / (2 * Math.sqrt(orbit.G2));
+    psi += scale * (axisIntegral(1 - orbit.y1, orbit.w2, j + t, n) - axisIntegral(1 - orbit.y1, orbit.w2, j, n));
+  }
+  return {
+    chi: chi + m * TWO_PI,
+    sigma: sigma + m * table.sigma[n],
+    lam: lam + m * table.lam[n],
+    phi: phi + m * table.phi[n],
+    psi: psi + m * table.psi[n],
   };
 }
 

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
 
-import { boundary, edge, embed, frequencies, horizons, node, solveOrbit, tabulate, vertices } from '../src/physics/index.js';
+import { between, boundary, edge, embed, frequencies, horizons, node, solveOrbit, tabulate, vertices } from '../src/physics/index.js';
 
 // Results of the reference model, src/photon_orbits/, written by src/photon_orbits/fixtures.py.
 const fixtures = JSON.parse(await readFile(new URL('../../tests/fixtures/orbits.json', import.meta.url), 'utf8'));
@@ -44,6 +44,10 @@ for (const fixture of fixtures.orbits) {
       const at = node(table, point.i);
       for (const key of ['chi', 'sigma', 'lam', 'phi', 'psi']) close(at[key], point[key], `${key} at node ${point.i}`);
       embed(orbit, at.chi, at.phi).forEach((value, k) => close(value, point['XYZ'[k]], `${'XYZ'[k]} at node ${point.i}`));
+    }
+    for (const point of fixture.between) {
+      const at = between(orbit, table, point.i, point.t);
+      for (const key of ['chi', 'sigma', 'lam', 'phi', 'psi']) close(at[key], point[key], `${key} at node ${point.i} + ${point.t}`);
     }
   });
 }

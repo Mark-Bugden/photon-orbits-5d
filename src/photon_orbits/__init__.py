@@ -5,11 +5,11 @@ which fixtures.py writes from it. docs/equations.md sets out the equations as im
 """
 
 from .orbit import NoOrbit, Orbit, SecondRootWarning, horizon, orbit_exists, solve_orbit
-from .oscillation import Table, embed, frequencies, latitude, node, tabulate
+from .oscillation import Table, between, embed, frequencies, latitude, node, tabulate
 from .region import boundary, directions, edge, vertices
 
 __all__ = [
     "NoOrbit", "Orbit", "SecondRootWarning", "Table",
-    "boundary", "directions", "edge", "embed", "frequencies", "horizon", "latitude", "node", "orbit_exists",
+    "between", "boundary", "directions", "edge", "embed", "frequencies", "horizon", "latitude", "node", "orbit_exists",
     "solve_orbit", "tabulate", "vertices",
 ]

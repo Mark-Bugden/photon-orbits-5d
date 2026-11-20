@@ -32,11 +32,12 @@ def steps_for(orbit):
 
 
 def axis_integral(at0, atpi, i, n):
-    """∫₀^χ dχ′ / (at0 + (atpi − at0) sin²(χ′/2)) at the node χ = 2πi/n (n even), for at0, atpi > 0.
+    """∫₀^χ dχ′ / (at0 + (atpi − at0) sin²(χ′/2)) at χ = 2πi/n (n even, 0 ≤ i ≤ n), for at0, atpi > 0.
 
     It is (2/√(at0·atpi)) arctan(k tan(χ/2)) with k = √(atpi/at0), on the branch continuous in χ. When the
-    band nearly touches an axis the integrand is a spike of width ~1e-12 at χ = 0 or π, so the node's angle
-    comes from its index, and the symmetries about χ = π/2 and π make the values at 0, π and 2π exact.
+    band nearly touches an axis the integrand is a spike of width ~1e-12 at χ = 0 or π, so the angle comes
+    from the index i, and the symmetries about χ = π/2 and π make the values at 0, π and 2π exact. i need not
+    be an integer: `between` uses it between the nodes.
     """
     scale = 2 / math.sqrt(at0 * atpi)
     k = math.sqrt(atpi / at0)
@@ -102,6 +103,33 @@ def node(table, i):
             table.lam[j] + m * table.lam[-1],
             table.phi[j] + m * table.phi[-1],
             table.psi[j] + m * table.psi[-1])
+
+
+def between(orbit, table, i, t):
+    """(χ, σ, λ, φ, ψ) at χ = (i + t)·2π/n, a fraction 0 ≤ t ≤ 1 of the way from node i to node i + 1.
+
+    One Simpson step of width t·h from node i, with the axis terms in closed form: it is node i at t = 0 and
+    meets node i + 1 at t = 1. Near an axis φ or ψ swings by about π between two nodes, and this follows the
+    swing, so the drawing can subdivide it.
+    """
+    n = table.n
+    m, j = divmod(i, n)
+    h = table.step
+    chi = (j + t) * h
+    f0, f1, f2 = rates(orbit, j * h), rates(orbit, (j + 0.5 * t) * h), rates(orbit, chi)
+    sigma, lam, phi, psi = (column[j] + t * h / 6 * (f0[k] + 4 * f1[k] + f2[k])
+                            for k, column in enumerate((table.sigma, table.lam, table.phi, table.psi)))
+    if orbit.Phi != 0:
+        scale = orbit.Phi / (2 * math.sqrt(orbit.G1))
+        phi += scale * (axis_integral(orbit.y1, orbit.y2, j + t, n) - axis_integral(orbit.y1, orbit.y2, j, n))
+    if orbit.Psi != 0:
+        scale = orbit.Psi / (2 * math.sqrt(orbit.G2))
+        psi += scale * (axis_integral(1 - orbit.y1, orbit.w2, j + t, n) - axis_integral(1 - orbit.y1, orbit.w2, j, n))
+    return (chi + m * TWO_PI,
+            sigma + m * table.sigma[-1],
+            lam + m * table.lam[-1],
+            phi + m * table.phi[-1],
+            psi + m * table.psi[-1])
 
 
 def latitude(orbit, chi):

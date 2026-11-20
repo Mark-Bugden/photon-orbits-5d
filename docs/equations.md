@@ -20,6 +20,8 @@ Most of this is the paper's own content, re-expressed. Five things are new, and 
 4. **The axis-spike subtraction is rewritten without cancellation** (§6), and the closed-form axis integral is evaluated from each node's index, so its values at $\chi = 0, \pi, 2\pi$ are exact.
 5. **Coordinate time $t$ is not computed.** The clock is $\lambda$ throughout, as the plan decided.
 
+**Added after the review**, for the drawing (milestone 2): the state between two nodes, `between` (§6, "Between the nodes").
+
 ## 1. Conventions
 
 **Units.** $\mu = 1$ and $E = 1$, so $\Phi$, $\Psi$ and $K$ stand for $\Phi/E$, $\Psi/E$ and $K/E^2$.
@@ -268,6 +270,16 @@ $$
 \nu_\psi = \frac{\Delta\psi + \pi\,[\Psi = 0,\ w_2 = 0]}{2\pi}.
 $$
 
+**Between the nodes.** Near an axis, $\phi$ or $\psi$ swings by about $\pi$ within one step, so the drawing needs values between the nodes. `between(orbit, table, i, t)` gives the state at $\chi_i + th$, for $0 \le t \le 1$: one Simpson step of width $th$ from node $i$ for the smooth remainders, plus the closed-form axis terms,
+
+$$
+Z(\chi_i + th) = Z_i + \tfrac{th}{6}\big[f(\chi_i) + 4f(\chi_i + \tfrac{th}{2}) + f(\chi_i + th)\big] + c\,\big[I(i + t) - I(i)\big],
+$$
+
+where $c\,I$ is the axis term of §6, evaluated by `axis_integral` at the fractional index $i + t$. At $t = 0$ this is node $i$ exactly, and at $t = 1$ it meets node $i + 1$ to rounding. Next to a swing, the smooth remainder varies on the swing's own scale, so one step is good to about $10^{-8}$, like the table (`test_between_follows_the_swing_near_an_axis`).
+
+The drawing (`demo/src/trail.js`) takes 128 steps per oscillation and halves any step in which $\phi$ or $\psi$ turns by more than 10°, as often as needed: a swing $10^{-12}$ wide takes about 40 halvings. Oscillation $m$ is then oscillation 0 turned about the axis by $2\pi m\,\nu_\phi$, with $Z$ changing sign each oscillation for an orbit through the equator, and $\psi$ advanced by $m\,\Delta\psi$.
+
 **What is not integrated.** $x$ is held fixed. Every orbit is radially unstable; see the Hamiltonian cross-check in §10. Coordinate time $t$ is not computed.
 
 ## 7. The picture
@@ -342,7 +354,7 @@ As $\mathcal E_+ \to 0$, $A_\phi$ and $A_\psi$ grow like $1/(x - x_+)$, so near 
 | 0.5, 0.5 | $10^{-4}$ | about 21 |
 | 0.7, 0.3 | $10^{-5}$ | about 68 |
 
-The drawing (milestone 2) will need to subdivide by $\phi$ as well as $\psi$ there. The pad (milestone 3) may want to stop the dot just short of this edge.
+The drawing subdivides by $\phi$ as well as $\psi$ there (§6, "Between the nodes"). The pad (milestone 3) may want to stop the dot just short of this edge.
 
 ## 9. Guards and tolerances
 
@@ -372,11 +384,12 @@ The drawing (milestone 2) will need to subdivide by $\phi$ as well as $\psi$ the
 | `test_equal_spins_have_closed_forms` | $\Delta\sigma$, $\Delta\phi$, $\Delta\psi$ in closed form for $a = b$, to $10^{-11}$ |
 | `test_the_closed_orbit_…` | $\nu = (1/3, -3/5)$: closes after 15 oscillations |
 | `test_the_table_has_converged` | $N = 256/512$ against $N = 4096$, to $10^{-7}$ (the plan's target), including band edges within $10^{-8}$ of an axis |
+| `test_between_the_nodes`, `test_between_repeats_with_the_table`, `test_between_follows_the_swing_near_an_axis` | Between the nodes: a table 16 times finer to $10^{-7}$ on 11 orbits, node $i$ exactly at $t = 0$ and node $i + 1$ to $10^{-12}$ at $t = 1$, periodic extension, and scipy's adaptive quadrature of the full rate across the swings near the pole and the equator, to $10^{-7}$ |
 | `test_small_momenta_…`, `test_tiny_momenta_count_as_zero` | $\nu$ continuous mod 1 through $\Phi = 0$ and $\Psi = 0$ for momenta from $10^{-12}$ to $10^{-4}$; $10^{-16}$ is exactly $0$ |
 | `test_phi_zero_…`, `test_psi_zero_…`, `test_the_path_lies_on_the_spheroid…` | Through the pole, across the equator, on the spheroid, and continuous |
 | `test_region.py` | Corners, star shape, convexity, circular-orbit edges, the extremal edge and its limits, and the plan's stress test: 96 directions × 8 fractions on 7 holes, all valid. Up to 0.999 of the way to the edge, every orbit is at least $1.9\times10^{-3}$ outside the horizon; the plan quoted 0.002 from the research solver. |
 | `test_hamiltonian.py` | Null geodesics of the corrected (2.1), from an inverse metric built by sympy and Hamilton's equations by DOP853 at rtol $10^{-12}$, from $\theta_{\min}$ over 3 oscillations. The table matches to $2\times10^{-8}$ in $\theta$, $\phi$, $\psi$, and to $1.2\times10^{-7}$ in $\psi$ for Fig 4.10, where $\psi$ swings by about $\pi$ near the equator. $x$ stays within $2\times10^{-8}$ of $x_0$, and $\lvert H\rvert < 10^{-10}$. That is on six orbits, one of them 0.1 outside an extremal horizon. Left free, $x$ leaves the orbit by 0.1% after 5.8–6.4 oscillations. |
-| `demo/test/physics.test.js` | The JS port against `tests/fixtures/orbits.json`: 31 orbits, 7 no-orbit cases, 8 regions of 96 rays. Largest relative difference $3\times10^{-16}$. An orbit and its table take about 0.13 ms; a 96-ray edge about 7 ms. |
+| `demo/test/physics.test.js` | The JS port against `tests/fixtures/orbits.json`: 31 orbits, with points at and between the nodes, 7 no-orbit cases, 8 regions of 96 rays. Largest relative difference $3\times10^{-16}$. An orbit and its table take about 0.13 ms; a 96-ray edge about 7 ms. |
 
 ## 11. Changes from the research scripts
 

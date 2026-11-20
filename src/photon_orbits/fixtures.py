@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 
 from .orbit import horizons, solve_orbit
-from .oscillation import embed, frequencies, node, tabulate
+from .oscillation import between, embed, frequencies, node, tabulate
 from .region import directions, edge, vertices
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -52,6 +52,11 @@ def orbit_case(a, b, Phi, Psi):
         chi, sigma, lam, phi, psi = node(table, i)
         X, Y, Z = embed(orbit, chi, phi)
         points.append({"i": i, "chi": chi, "sigma": sigma, "lam": lam, "phi": phi, "psi": psi, "X": X, "Y": Y, "Z": Z})
+    # between the nodes: next to χ = 0, π and 2π, where φ or ψ swings near an axis, and in later and earlier oscillations
+    betweens = []
+    for i, t in ((0, 0.5), (n // 2 - 1, 0.9), (n // 2, 0.1), (n - 1, 0.999), (3 * n + 7, 0.25), (-5, 0.6)):
+        chi, sigma, lam, phi, psi = between(orbit, table, i, t)
+        betweens.append({"i": i, "t": t, "chi": chi, "sigma": sigma, "lam": lam, "phi": phi, "psi": psi})
     return {
         "a": a, "b": b, "Phi": Phi, "Psi": Psi,
         "orbit": {
@@ -66,6 +71,7 @@ def orbit_case(a, b, Phi, Psi):
         },
         "frequencies": list(frequencies(orbit, table)),
         "points": points,
+        "between": betweens,
     }
 
 
