@@ -1,47 +1,58 @@
 // The demo's entry point. Vite bundles it with the kit, three.js and the CSS into demo.js and demo.css.
 //
-// For now the momenta are set with plain sliders, and most pairs have no orbit; step 3 of the plan replaces them
-// with a pad that shows where orbits exist.
+// The controls, top to bottom: the presets, the spins, the momentum pad with its two sliders, and the trail's
+// length. A preset sets all of them, the photon's place and the camera.
 
 import manifest from 'virtual:manifest';
-import { mount, slider } from '@mark-bugden/demo-kit';
+import { mount, select, slider } from '@mark-bugden/demo-kit';
 import '@mark-bugden/demo-kit/tokens.scoped.css';
 import '@mark-bugden/demo-kit/frame.css';
 import './demo.css';
 
+import { extremal } from './momenta.js';
+import { pad } from './pad.js';
+import { createLegend } from './panel/legend.js';
 import { frequencies, horizon, solveOrbit, tabulate } from './physics/index.js';
+import { OPENING, PRESETS } from './presets.js';
 import { createView } from './scene/index.js';
+import { spins } from './spins.js';
 import { chiAt, lamAt, refine } from './trail.js';
 
-// Fig 4.10, until step 3 of the plan chooses the opening state from the presets.
-const OPENING = { a: 0.9, b: 0.09, Phi: 0.1, Psi: 0.01, trail: 40 };
 const RATE = 2; // λ per second: about one oscillation every 1.5 s
 const TRAIL = [3, 300]; // the trail's length in λ, from about one oscillation to about 100
 
-const minus = (text) => text.replace('-', '−');
-const fixed = (digits) => (value) => minus(value.toFixed(digits));
+const EXTREMAL = 'Extremal: a + b = 1. The inner and outer horizons have merged, and the hole spins as fast as a black hole of its mass can.';
+const HELD = 'a + b stops at 1, where the hole is extremal: its inner and outer horizons have merged. Beyond that, it would have no horizon.';
+const EDGE = (name) => `${name} stops at the edge of the shaded region: past it, no spherical orbit has these momenta.`;
+
 const signed = (value) => `${value < 0 ? '−' : '+'}${Math.abs(value).toFixed(2)}`;
 const degrees = (radians) => ((180 / Math.PI) * radians).toFixed(1);
 
 const controls = {
-  a: slider({ label: 'Spin a', min: 0, max: 0.99, step: 0.01, value: OPENING.a, format: fixed(2) }),
-  b: slider({ label: 'Spin b', min: 0, max: 0.99, step: 0.01, value: OPENING.b, format: fixed(2) }),
-  Phi: slider({ label: 'Momentum Φ', min: -3, max: 3, step: 0.01, value: OPENING.Phi, format: fixed(2) }),
-  Psi: slider({ label: 'Momentum Ψ', min: -3, max: 3, step: 0.01, value: OPENING.Psi, format: fixed(2) }),
+  preset: select({
+    label: 'Preset',
+    options: [{ label: 'Custom', value: null }, ...PRESETS.map((preset) => ({ label: preset.name, value: preset }))],
+    value: PRESETS.find((preset) => preset.name === OPENING.name),
+  }),
+  spins: spins({ value: [OPENING.a, OPENING.b] }),
+  momenta: pad({ spins: [OPENING.a, OPENING.b], value: [OPENING.Phi, OPENING.Psi] }),
   trail: slider({
     label: 'Trail length',
     min: Math.log10(TRAIL[0]),
     max: Math.log10(TRAIL[1]),
     step: 0.01,
-    value: Math.log10(OPENING.trail),
     format: (value) => `λ ${Math.round(10 ** value)}`,
   }),
 };
 
 let view = null;
-let current = null; // { key, orbit, table, path }, or { key, orbit } when there is no orbit
+let legend = null;
+let current = null; // { key, orbit, table, path, … }, or { key, orbit, … } with no path when there is no orbit
 let lam = 0; // the photon's λ
 let chi = 0; // and its χ, which keeps its place in the oscillation when the orbit changes
+let start = OPENING; // the preset last chosen: where Reset puts the photon back
+let psi0 = OPENING.psi0; // ψ at χ = 0, which sets the colours
+let aim = OPENING.view; // a viewpoint to turn the camera to once the spheroid is drawn
 let note = ''; // shown in the status line instead of the readout, until the next change
 let shown = null;
 let painted = null; // the theme the view's background was last painted for
@@ -53,27 +64,44 @@ const frame = mount({
   stage: 'div',
   animate: true,
   reset() {
-    lam = 0;
-    chi = 0;
+    chi = start.span[1];
+    if (current?.path) lam = lamAt(current.path, chi);
   },
   render: draw,
 });
 
-// a + b ≤ 1: beyond that there is no horizon. The slider that would pass it stops at the limit instead.
-function holdSpins(moved, other) {
-  return () => {
-    note = '';
-    if (controls.a.value + controls.b.value <= 1 + 1e-9) return;
-    controls[moved].value = Math.round(100 * (1 - controls[other].value)) / 100;
-    note = 'a + b stops at 1: beyond that, the black hole would have no horizon.';
-  };
+// Any change of the user's own makes the state custom, and clears the last note.
+function custom(text = '') {
+  controls.preset.value = null;
+  note = text;
 }
-controls.a.onChange(holdSpins('a', 'b'));
-controls.b.onChange(holdSpins('b', 'a'));
-for (const name of ['Phi', 'Psi', 'trail']) controls[name].onChange(() => (note = ''));
+controls.spins.onChange(([a, b], { held }) => {
+  controls.momenta.setSpins(a, b);
+  custom(held ? HELD : extremal(a, b) ? EXTREMAL : '');
+});
+controls.momenta.onChange((value, { stopped, axis }) => custom(stopped ? EDGE(axis === 'Phi' ? 'Φ' : 'Ψ') : ''));
+controls.trail.onChange(() => custom());
+controls.preset.onChange((preset) => preset && apply(preset));
 
-// The orbit for the controls, its table and drawn path, and the semi-axes of its spheroid and the horizon's.
-function solve({ a, b, Phi, Psi }, key) {
+function apply(preset) {
+  const { a, b, Phi, Psi, span } = preset;
+  controls.spins.value = [a, b];
+  controls.momenta.setSpins(a, b);
+  controls.momenta.value = [Phi, Psi];
+  current = solve(a, b, Phi, Psi);
+  view?.setShape(current.orbitAxes, current.horizonAxes);
+  chi = span[1];
+  lam = lamAt(current.path, chi);
+  controls.trail.value = Math.log10(lam - lamAt(current.path, span[0]));
+  start = preset;
+  psi0 = preset.psi0;
+  aim = preset.view;
+  note = extremal(a, b) ? EXTREMAL : '';
+}
+
+// The orbit for these spins and momenta, its table and drawn path, and the semi-axes of its spheroid and the horizon's.
+function solve(a, b, Phi, Psi) {
+  const key = [a, b, Phi, Psi].join();
   const xPlus = horizon(a, b);
   const horizonAxes = [Math.sqrt(xPlus + a * a), Math.sqrt(xPlus + b * b)];
   const orbit = solveOrbit(a, b, Phi, Psi);
@@ -100,18 +128,23 @@ function draw({ width, height, pixelRatio, values, delta, theme, token }) {
     view.setBackground(token('--color-surface'));
     painted = theme;
   }
-  const key = [values.a, values.b, values.Phi, values.Psi].join();
+  const [a, b] = values.spins;
+  const [Phi, Psi] = values.momenta;
+  const key = [a, b, Phi, Psi].join();
   if (key !== current?.key) {
-    const first = current === null;
-    current = solve(values, key);
+    current = solve(a, b, Phi, Psi);
     view.setShape(current.orbitAxes, current.horizonAxes);
     if (current.path) lam = lamAt(current.path, chi);
-    if (first) view.fit();
+  }
+  if (aim) {
+    view.setShape(current.orbitAxes, current.horizonAxes);
+    view.fit(aim);
+    aim = null;
   }
   if (current.path) {
     lam += RATE * delta;
     chi = chiAt(current.path, lam);
-    view.showTrail(current.path, lam, 10 ** values.trail);
+    legend.set(view.showTrail(current.path, lam, 10 ** values.trail, psi0));
   } else {
     view.hideTrail();
   }
@@ -133,11 +166,13 @@ function showStill() {
   frame.stage.append(still);
 }
 
+apply(OPENING);
 try {
   view = createView(frame.stage, {
     onChange: () => frame.redraw(),
     reducedMotion: globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false,
   });
+  legend = createLegend(frame.stage);
 } catch (error) {
   console.error(error);
   frame.pause();

@@ -9,7 +9,7 @@ import { createPath } from './path.js';
 import { BEHIND, createSurfaces } from './surfaces.js';
 
 const FOV = 30; // degrees, vertical
-const VIEWPOINT = new Vector3(1.3, -2.4, 2).normalize(); // Mathematica's default, as in the paper's figures
+const VIEWPOINT = new Vector3(1.3, -2.4, 2).normalize(); // Mathematica's default, until a preset sets another
 const MARGIN = 1.12; // room around the spheroid when the view fits it
 const ZOOM = 0.8; // each press of a zoom button
 const TURN = Math.PI / 24; // each press of an arrow key: 7.5°
@@ -85,14 +85,21 @@ export function createView(stage, { onChange, reducedMotion = false }) {
 
   let radius = 1; // of the orbit's spheroid, or the horizon's if there is no orbit: what the view fits
   let size = { width: 0, height: 0, pixelRatio: 0 };
+  const home = VIEWPOINT.clone(); // the direction "Reset view" looks from
 
-  function fit() {
+  // Turns the camera to look from home, or from [azimuth, elevation] in degrees, which becomes home, at the
+  // distance that fits the spheroid.
+  function fit(view) {
+    if (Array.isArray(view)) {
+      const [azimuth, elevation] = view.map((degrees) => (degrees * Math.PI) / 180);
+      home.set(Math.cos(elevation) * Math.cos(azimuth), Math.cos(elevation) * Math.sin(azimuth), Math.sin(elevation));
+    }
     const half = (FOV * Math.PI) / 360;
     const across = Math.atan(Math.tan(half) * camera.aspect);
     const damping = controls.enableDamping;
     controls.enableDamping = false;
     controls.update(); // finishes any turn still easing out, so it can't carry on after the camera moves
-    camera.position.copy(VIEWPOINT).multiplyScalar((MARGIN * radius) / Math.sin(Math.min(half, across)));
+    camera.position.copy(home).multiplyScalar((MARGIN * radius) / Math.sin(Math.min(half, across)));
     controls.target.set(0, 0, 0);
     controls.update();
     controls.enableDamping = damping;
@@ -121,7 +128,10 @@ export function createView(stage, { onChange, reducedMotion = false }) {
       radius = Math.max(...(orbitAxes ?? horizonAxes));
       path.photon.scale.setScalar(0.022 * radius);
     },
-    /** Turns the camera back to the paper's viewpoint, at the distance that fits the current spheroid. */
+    /**
+     * Turns the camera to look from [azimuth, elevation], in degrees with z up, at the distance that fits the
+     * current spheroid; "Reset view" then comes back here. Without a view, it looks from the last one given.
+     */
     fit,
     /** Paints the background around the spheroid, e.g. the stage's colour for the theme. */
     setBackground(colour) {

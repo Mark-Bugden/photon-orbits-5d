@@ -40,10 +40,11 @@ function segments(geometry, array, start, end) {
   return buffer;
 }
 
-// Writes the colour of the angle ψ, faded towards BEHIND by its place along the trail, in linear RGB.
+// Writes the colour of the angle ψ + shift, faded towards BEHIND by its place along the trail, in linear RGB.
 const behind = new Color(BEHIND);
+let shift = 0;
 function paint(psi, fraction, out, offset) {
-  const k = 3 * wheelIndex(psi);
+  const k = 3 * wheelIndex(psi + shift);
   const weight = FADED + (1 - FADED) * Math.min(1, fraction / FULL);
   out[offset] = behind.r + weight * (WHEEL[k] - behind.r);
   out[offset + 1] = behind.g + weight * (WHEEL[k + 1] - behind.g);
@@ -80,7 +81,7 @@ function patch(shader) {
   }
 }
 
-/** { group, setSpheroid(axes), show(path, head, length), hide(), photon }: the trail and the photon. */
+/** { group, setSpheroid(axes), show(path, head, length, psi0), hide(), photon }: the trail and the photon. */
 export function createPath() {
   const positions = new Float32Array(6 * CAPACITY);
   const colours = new Float32Array(6 * CAPACITY);
@@ -125,8 +126,12 @@ export function createPath() {
     setSpheroid([across, up]) {
       axes.set(across * across, across * across, up * up);
     },
-    /** Draws the trail from λ = head − length to the photon at λ = head. */
-    show(path, lam, length) {
+    /**
+     * Draws the trail from λ = head − length to the photon at λ = head, coloured by ψ + psi0, where psi0 is ψ at
+     * the start of the path. Returns the photon's ψ + psi0.
+     */
+    show(path, lam, length, psi0 = 0) {
+      shift = psi0;
       const count = fill(path, lam, length, positions, colours, paint, head);
       geometry.instanceCount = count;
       for (const buffer of [positionBuffer, colourBuffer]) {
@@ -136,6 +141,7 @@ export function createPath() {
       }
       photon.position.set(head[0], head[1], head[2]);
       group.visible = true;
+      return head[3] + psi0;
     },
     hide() {
       group.visible = false;
