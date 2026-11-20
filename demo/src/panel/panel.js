@@ -9,7 +9,7 @@ import { createTorus } from './torus.js';
 const TABS = [
   {
     label: 'θ, φ, ψ against λ',
-    description: 'θ, φ and ψ against λ over the trail, with the photon at the right-hand end. φ and ψ are unwrapped.',
+    description: 'θ, φ and ψ against λ over the trail, with the photon at the right-hand end. φ and ψ run from 0 to 2π, wrapping round at the edges.',
   },
   {
     label: '(φ, ψ) torus',

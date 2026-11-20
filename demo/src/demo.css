@@ -189,13 +189,16 @@
   }
 }
 
-/* The colour legend: the paper's wheel in the 3D view's top-left corner, with a needle at the photon's ψ. */
+/*
+ * The colour legend: the paper's wheel in the 3D view's top-left corner, with a needle at the photon's ψ, and the
+ * spin b's arrow round it.
+ */
 [data-demo] .po-legend {
   --size: 3.5rem;
   --thickness: 0.55rem;
   position: absolute;
-  top: calc(var(--space-3) + 1.1rem);
-  left: calc(var(--space-3) + 1.6rem);
+  top: calc(var(--space-3) + 1.5rem);
+  left: calc(var(--space-3) + 2rem);
   width: var(--size);
   height: var(--size);
   color: var(--color-muted);
@@ -238,9 +241,19 @@
   transform: translate(-50%, -50%);
 }
 
-/* Each label sits just outside the ring, at its angle. */
+/* Each label sits outside the arrow, at its angle. */
 [data-demo] .po-legend-label {
-  transform: translate(-50%, -50%) rotate(var(--angle)) translateX(calc(var(--size) / 2 + 0.85rem)) rotate(calc(-1 * var(--angle)));
+  transform: translate(-50%, -50%) rotate(var(--angle)) translateX(calc(var(--size) * 0.86)) rotate(calc(-1 * var(--angle)));
+}
+
+/* The arrow's SVG is drawn in units in which the ring's outer radius is 28 and its own half-width is 40. */
+[data-demo] .po-legend-spin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: calc(var(--size) * 80 / 56);
+  height: calc(var(--size) * 80 / 56);
+  transform: translate(-50%, -50%);
 }
 
 /* On phones the 3D view is small, so the legend is too. */

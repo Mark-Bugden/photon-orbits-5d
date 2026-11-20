@@ -301,11 +301,11 @@ Where an orbit passes through an axis, the coordinates are signed, as the paper'
 - **$\Phi = 0$ and $y_1 = 0$:** $\sin\theta = \sqrt{y_2}\,\sin(\chi/2)$. It changes sign each oscillation, so the path goes straight over the pole.
 - **$\Psi = 0$ and $w_2 = 0$:** $\cos\theta = \sqrt{1-y_1}\,\cos(\chi/2)$. $Z$ is negative for $\chi \in (\pi, 3\pi)$, so the path crosses the equator ring onto the lower half and keeps its colour.
 
-**The side panel** plots the same signed coordinates, $\theta = \operatorname{atan2}(\sin\theta, \cos\theta)$, against $\lambda$, with $\phi$ and $\psi$ unwrapped (Mark's decision in milestone 4: the curves are geodesics, so they stay smooth). So $\theta$, $\phi$ and $\psi$ are continuous through the axes:
+**The side panel** plots the same signed coordinates, $\theta = \operatorname{atan2}(\sin\theta, \cos\theta)$, against $\lambda$ (Mark's decision in milestone 4: the curves are geodesics, so they stay smooth). So $\theta$, $\phi$ and $\psi$ are continuous through the axes. The panel then takes $\phi$ and $\psi$ mod $2\pi$, as the torus does, so they jump only from $2\pi$ to $0$ (Mark, after milestone 4):
 
 - through the pole, $\theta$ swings between $-\theta_{\max}$ and $\theta_{\max}$, and $\phi$ advances by $\Delta\phi$ per oscillation, without the half turn that the picture's rotation adds;
 - through the equator, $\theta$ runs from $\theta_{\min}$ past $\pi/2$ to $\pi - \theta_{\min}$ and back, over two oscillations;
-- through both ($\Phi = \Psi = 0$, so $y_1 = 0$ and $y_2 = 1$), $\theta = \chi/2$, which grows by $\pi$ per oscillation.
+- through both ($\Phi = \Psi = 0$, so $y_1 = 0$ and $y_2 = 1$), $\theta = \chi/2$, which grows by $\pi$ per oscillation. The panel takes this $\theta$ mod $2\pi$ too.
 
 `trace` in `demo/src/trail.js` gives these from the drawn oscillation: for oscillation $m$, $\theta \mapsto (-1)^m\theta$ through the pole, $\theta \mapsto \pi - \theta$ for odd $m$ through the equator, and $\theta \mapsto \theta + m\pi$ through both. `test/trail.test.js` checks that the signed $\theta$ and unwrapped $\phi$ put every point where the picture does.
 
