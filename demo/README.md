@@ -29,7 +29,7 @@ The files to edit:
 | `src/pad.js`, `src/momenta.js` | The momentum pad, and its geometry: where the allowed region ends, and where the dot goes when the spins change. `test/momenta.test.js` checks the geometry. |
 | `src/spins.js` | The spin sliders, held to a + b ≤ 1, with the "Extremal" label. |
 | `src/presets.js` | The presets and the opening state. The figures' values were fitted to the paper's images by `../docs/research/scripts/presets/`. |
-| `src/scene/` | The 3D view, with three.js: the spheroids, the trail, the photon and the camera. |
+| `src/scene/` | The 3D view, with three.js: the spheroids, the trail, the photon, the spin arrow (`spin.js`) and the camera. |
 | `src/panel/` | The side panel beside the 3D view (`panel.js`): θ, φ and ψ against λ (`strip.js`) and the (φ, ψ) torus (`torus.js`), on a 2D canvas, with their axes' ticks (`ticks.js`, checked by `test/ticks.test.js`). Also the colour legend drawn over the 3D view (`legend.js`). |
 | `src/trail.js`, `src/colour.js` | The path ready to draw: `fill()` writes the 3D trail and `trace()` walks it for the panel. And the paper's colour wheel. `test/trail.test.js` checks them. |
 | `src/physics/` | The orbits: a port of the Python reference model in `../src/photon_orbits/`, explained in `../docs/equations.md`. Change both together and regenerate `../tests/fixtures/orbits.json`, which `test/physics.test.js` replays. |

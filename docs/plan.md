@@ -109,12 +109,12 @@ Everything else checks out exactly, and the figure parameters reproduce every fi
 | Spins | Sliders for a and b, each from 0 to 0.99, held to a + b ≤ 1: beyond that there is no horizon. When a slider stops, the status line says why. Negative spins only mirror the picture, so they're left out. |
 | Extremal black holes | When a + b = 1, an "Extremal" label appears beside the spin sliders, and the status line says why it is special: the inner and outer horizons have merged, and the hole spins as fast as a black hole of its mass can. The Fig 4.8 preset is extremal. |
 | Momenta | A square pad in the controls rail: Φ across and Ψ up, on fixed axes from −3 to 3, so the region visibly reshapes as the spins change. The allowed region is tinted by the orbit's radius, darker for orbits closer in, with a key in the pad's corner (Mark, 2026-11-20), and the current orbit is a dot to drag. With spin, the halves are labelled "with a" and "against a", and "with b" and "against b". Below the pad, sliders for Φ and Ψ give fine and keyboard control; each stops at the region's edge. When a or b changes, the dot keeps its direction from the origin and its fraction of the way to the edge, so the orbit keeps its character as the region changes shape. |
-| Trail | A "Trail length" slider in λ, on a log scale from about one oscillation (λ ≈ 3) to about 100 (λ ≈ 300). The trail fades towards its tail. |
+| Trail | A "Trail length" slider in λ, on a log scale from about one oscillation (λ ≈ 3) to about 100 (λ ≈ 300). The trail fades towards its tail. Its length is the visitor's: presets leave it alone (Mark, 2026-11-20). |
 | Animation | Play/Pause and Reset come from the kit. The photon moves at a steady rate in λ, about one oscillation every 1.5 s. A change to any control keeps the photon's place in its oscillation and redraws its past path for the new orbit at once, so the trail is never empty. The animation starts paused under reduced motion. |
-| Presets | A drop-down: the paper's Figs 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8 and 4.10 (4.9 and 4.11 plot the same orbits against λ) and 4.12. Also "Equal spins (a = b)", where every orbit's radius depends only on Φ + Ψ, and "No spin", the Tangherlini case, where every orbit is a great circle with r = √2. Each preset sets a, b, Φ, Ψ, the trail length, the starting point, the colours and the camera, fitted to the figure's image ([research/scripts/presets/](research/scripts/presets/)). Any change of the visitor's own shows "Custom". Reset puts the photon back where the last preset started it. |
+| Presets | A drop-down: the paper's Figs 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8 and 4.10 (4.9 and 4.11 plot the same orbits against λ) and 4.12. Also "Equal spins (a = b)", where every orbit's radius depends only on Φ + Ψ, and "No spin", the Tangherlini case, where every orbit is a great circle with r = √2. Each preset sets a, b, Φ, Ψ, the starting point, the colours and the direction the camera looks from, fitted to the figure's image ([research/scripts/presets/](research/scripts/presets/)). The trail's length and the zoom stay as the visitor left them. Any change of the visitor's own shows "Custom". Reset puts the photon back where the last preset started it. |
 | Opening state | Fig 4.5's orbit, moment, colours and viewpoint, with three oscillations of trail rather than the figure's 27 (Mark, 2026-11-20). The drop-down shows Fig 4.5. |
-| 3D view | Drag to rotate. Zoom with buttons and pinch, while the mouse wheel keeps scrolling the page. A "Reset view" button. |
-| Side panel | θ, φ and ψ against λ over the visible trail, as in Figs 4.9 and 4.11: three rows sharing the λ axis, with the photon marked at the right-hand end. Dashed lines mark the band's edges, θ₋ and θ₊. φ and ψ are unwrapped, as in the paper, and a band under ψ shows the trail's colour at each λ. Through an axis, θ, φ and ψ run on smoothly in the 3D view's signed coordinates (step 4). A second tab shows the (φ, ψ) torus: a square in which the path wraps around. It shows ψ without colour and makes quasiperiodicity visible. |
+| 3D view | Drag to rotate. Zoom with buttons and pinch, while the mouse wheel keeps scrolling the page. The zoom is the visitor's, and stays put through presets and every control, so an orbit's size on screen is its size (Mark, 2026-11-20). The default zoom fits every orbit's spheroid, and a "Reset view" button goes back to it and to the last preset's viewpoint. An arrow above the spheroid shows which way the hole turns in the a-plane: towards −φ, clockwise seen from above. It is hidden when a = 0. The b-plane's turning shows only in ψ, so its arrow goes round the colour wheel, towards −ψ, and is hidden when b = 0. |
+| Side panel | θ, φ and ψ against λ over the visible trail, as in Figs 4.9 and 4.11: three rows sharing the λ axis, with the photon marked at the right-hand end. Dashed lines mark the band's edges, θ₋ and θ₊. φ and ψ run from 0 to 2π, as on the torus, and wrap at the edges, so no row's axis shifts (Mark, 2026-11-20). A band under ψ shows the trail's colour at each λ. Through an axis, θ, φ and ψ run on smoothly in the 3D view's signed coordinates (step 4). A second tab shows the (φ, ψ) torus: a square in which the path wraps around. It shows ψ without colour and makes quasiperiodicity visible. |
 | Readouts | The status line gives r, the θ band and the advance per oscillation in turns, for example "r = 1.32 · θ from 37.6° to 51.5° · per swing: φ +0.34 turns, ψ −0.61 turns". If the dot ever lands outside the region, it says "No spherical orbit for these momenta". |
 | Copy | Plain. "How this works" is drafted for Mark to rewrite: on the site, Mark writes the English copy himself. |
 
@@ -171,7 +171,7 @@ Everything else checks out exactly, and the figure parameters reproduce every fi
 demo/                  the site bundle, built with demo-kit (see the site contract)
   src/main.js          frame, controls and wiring
   src/physics/         pure functions: horizon, solver, band, region, one-oscillation table, frequencies
-  src/scene/           three.js: spheroids, path, photon, camera
+  src/scene/           three.js: spheroids, path, photon, spin arrow, camera
   src/pad.js           the momentum pad, a control with the kit's shape ({ el, value, onChange })
   src/momenta.js       the pad's geometry: where the region ends, and where the dot goes when the spins change
   src/spins.js         the spin sliders, held to a + b ≤ 1, with the "Extremal" label
@@ -267,6 +267,18 @@ pyproject.toml         a uv project; commit uv.lock
   - Measured in Edge, playing at 60 frames a second, the main thread's time per frame, 3D trail included: on Fig 4.10's longest trail, 4.3 ms with the strip and 4.6 ms with the torus; near the extremal edge, 8.8 ms and 10.5 ms.
 - [x] Checked in Edge, with no console errors: standalone and embedded, both themes, phone width; every preset; the tabs' arrow keys; Reset. On a phone, a swipe on the panel scrolls the page, and one on the 3D view turns it.
 
+### After step 4: notes on the live demo (PR, then release `v0.4.1`)
+- [x] **A steady zoom** (Mark, 2026-11-20). A preset used to fit the camera to its spheroid, so the zoom jumped with every preset. Now a preset turns the camera to its viewpoint and keeps the visitor's zoom. The default zoom fits a sphere of radius 2.25, which holds the largest spheroid any spins and momenta give: 2.23, counter-rotating at a or b = 0.99. "Reset view" goes back to it.
+- [x] **The trail's length is the visitor's** (Mark, 2026-11-20). Presets no longer set it, and changing it no longer shows "Custom". The opening still has exactly three oscillations of Fig 4.5's trail. A preset's span now gives only the photon's start.
+- [x] **Which way the hole turns** (Mark, 2026-11-20: "it's not clear in which direction the black hole is rotating"). An arrow above the spheroid, around a short axle, turns clockwise seen from above, towards −φ (`demo/src/scene/spin.js`).
+  - The axle stops short of the spheroid, so it never hides a path over the pole.
+  - The arrow is pale with a dark outline, so it reads on the dark spheroid and on either theme's page.
+  - It turns with the camera, so its head is always at the front left: from the side, the front of the hole moves to the left.
+  - It is hidden when a = 0. Checked against the physics: an orbit with Φ = 0 drifts towards −φ, by −0.13 turns per oscillation for a = 0.5, b = 0.
+- [x] **Which way the hole turns in the b-plane** (Mark chose it, 2026-11-20). The 3D view shows (x₁, x₂) and only the distance from the axis in the b-plane, so the b-rotation moves nothing in it: it is all in ψ, the colour. So b's arrow goes round the colour wheel, which is the b-plane, towards −ψ: clockwise there. It looks like a's arrow and is hidden when b = 0. Fig 4.6's photon, with Ψ = 0, drifts the way it points.
+- [x] **The side panel's φ and ψ run from 0 to 2π,** as on the torus (Mark, 2026-11-20: the shifting axes were confusing). This replaces step 4's unwrapped rows, each fitted to its stretch. Where a curve passes a multiple of 2π, it leaves at one edge of its row and comes back at the other. θ does too through both the pole and the equator, where it grows by π each oscillation, so every row's axis is fixed. The ticks are fractions of π on every row.
+- [x] Checked in Edge, with no console errors: both themes; Figs 4.2, 4.3, 4.5, 4.6, 4.7, 4.8, 4.10 and 4.12; zooming in, then choosing a preset; "Reset view"; the longest trail, which keeps its length through presets.
+
 ### 5. Polish and release (PR, then release `v1.0.0`)
 - [ ] **Accessibility:**
   - every control works from the keyboard;
@@ -307,6 +319,9 @@ Settled with Mark on 2026-11-20. The comparison page, <https://claude.ai/artifac
 | The pad's region | Tinted by the orbit's radius (step 3). |
 | The side panel through an axis | Smooth, in the 3D view's signed coordinates: "jumps are purely artifacts of coordinate systems" (step 4). |
 | Fig 4.8's colour offset | Follows Fig 4.8's colours rather than Fig 4.9's ψ curve; Mark left it to Claude (step 4). |
+| Zoom and trail length | The visitor's own: presets leave them alone (after step 4). |
+| Which way the hole turns | An arrow above the spheroid for a, and one round the colour wheel for b, whose turning shows only in ψ (after step 4). |
+| The side panel's φ and ψ | From 0 to 2π, as on the torus, rather than unwrapped (after step 4). |
 
 ## Risks
 
