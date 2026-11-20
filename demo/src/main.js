@@ -1,7 +1,8 @@
 // The demo's entry point. Vite bundles it with the kit, three.js and the CSS into demo.js and demo.css.
 //
 // The controls, top to bottom: the presets, the spins, the momentum pad with its two sliders, and the trail's
-// length. A preset sets all of them, the photon's place and the camera.
+// length. A preset sets all of them, the photon's place and the camera. The stage holds the 3D view and, beside
+// it, the side panel, which plots the same trail.
 
 import manifest from 'virtual:manifest';
 import { mount, select, slider } from '@mark-bugden/demo-kit';
@@ -12,6 +13,7 @@ import './demo.css';
 import { extremal } from './momenta.js';
 import { pad } from './pad.js';
 import { createLegend } from './panel/legend.js';
+import { createPanel } from './panel/panel.js';
 import { frequencies, horizon, solveOrbit, tabulate } from './physics/index.js';
 import { OPENING, PRESETS } from './presets.js';
 import { createView } from './scene/index.js';
@@ -47,11 +49,16 @@ const controls = {
 
 let view = null;
 let legend = null;
+let panel = null;
+const viewSize = { width: 0, height: 0 }; // of the 3D view, beside the panel
 let current = null; // { key, orbit, table, path, … }, or { key, orbit, … } with no path when there is no orbit
 let lam = 0; // the photon's λ
 let chi = 0; // and its χ, which keeps its place in the oscillation when the orbit changes
+let length = 0; // the trail's, in λ: a preset's exactly, until the slider (which rounds it) moves
 let start = OPENING; // the preset last chosen: where Reset puts the photon back
-let psi0 = OPENING.psi0; // ψ at χ = 0, which sets the colours
+let psi0 = OPENING.psi0; // ψ at χ = 0, which sets the colours and the panel's ψ
+let phi0 = 0; // φ at χ = 0, for the panel's φ (the 3D view's is in its camera)
+let lam0 = 0; // the demo's λ at the paper's λ = 0, for the panel's λ axis
 let aim = OPENING.view; // a viewpoint to turn the camera to once the spheroid is drawn
 let note = ''; // shown in the status line instead of the readout, until the next change
 let shown = null;
@@ -80,7 +87,10 @@ controls.spins.onChange(([a, b], { held }) => {
   custom(held ? HELD : extremal(a, b) ? EXTREMAL : '');
 });
 controls.momenta.onChange((value, { stopped, axis }) => custom(stopped ? EDGE(axis === 'Phi' ? 'Φ' : 'Ψ') : ''));
-controls.trail.onChange(() => custom());
+controls.trail.onChange((value) => {
+  length = 10 ** value;
+  custom();
+});
 controls.preset.onChange((preset) => preset && apply(preset));
 
 function apply(preset) {
@@ -92,9 +102,12 @@ function apply(preset) {
   view?.setShape(current.orbitAxes, current.horizonAxes);
   chi = span[1];
   lam = lamAt(current.path, chi);
-  controls.trail.value = Math.log10(lam - lamAt(current.path, span[0]));
+  length = lam - lamAt(current.path, span[0]);
+  controls.trail.value = Math.log10(length);
   start = preset;
   psi0 = preset.psi0;
+  phi0 = preset.phi0 ?? 0;
+  lam0 = preset.lam0 ?? 0;
   aim = preset.view;
   note = extremal(a, b) ? EXTREMAL : '';
 }
@@ -121,9 +134,9 @@ function readout({ orbit, table }) {
   return `r = ${Math.sqrt(orbit.x).toFixed(2)} · θ from ${low}° to ${high}° · per swing: φ ${signed(turnsPhi)} turns, ψ ${signed(turnsPsi)} turns`;
 }
 
-function draw({ width, height, pixelRatio, values, delta, theme, token }) {
+function draw({ pixelRatio, values, delta, theme, token }) {
   if (!view) return;
-  view.setSize(width, height, pixelRatio);
+  view.setSize(viewSize.width, viewSize.height, pixelRatio);
   if (theme !== painted) {
     view.setBackground(token('--color-surface'));
     painted = theme;
@@ -144,9 +157,11 @@ function draw({ width, height, pixelRatio, values, delta, theme, token }) {
   if (current.path) {
     lam += RATE * delta;
     chi = chiAt(current.path, lam);
-    legend.set(view.showTrail(current.path, lam, 10 ** values.trail, psi0));
+    legend.set(view.showTrail(current.path, lam, length, psi0));
+    panel.show(current.path, lam, length, lam0, phi0, psi0);
   } else {
     view.hideTrail();
+    panel.hide();
   }
   const status = note || readout(current);
   if (status !== shown) frame.status((shown = status));
@@ -166,17 +181,37 @@ function showStill() {
   frame.stage.append(still);
 }
 
-apply(OPENING);
-try {
-  view = createView(frame.stage, {
+// The stage: the 3D view, with the colour legend over it, and the side panel beside it (below it on phones).
+function build() {
+  const layout = document.createElement('div');
+  layout.className = 'po-layout';
+  const box = document.createElement('div');
+  box.className = 'po-view';
+  layout.append(box);
+  frame.stage.append(layout);
+  view = createView(box, {
     onChange: () => frame.redraw(),
     reducedMotion: globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false,
   });
-  legend = createLegend(frame.stage);
+  legend = createLegend(box);
+  panel = createPanel({ onChange: () => frame.redraw() });
+  layout.append(panel.el);
+  new ResizeObserver(([entry]) => {
+    viewSize.width = entry.contentRect.width;
+    viewSize.height = entry.contentRect.height;
+    frame.redraw();
+  }).observe(box);
+}
+
+apply(OPENING);
+try {
+  build();
 } catch (error) {
   console.error(error);
+  view = null;
   frame.pause();
   for (const control of Object.values(controls)) control.disabled = true;
+  frame.stage.replaceChildren();
   showStill();
   frame.status('This demo draws with WebGL, which this browser could not start.');
 }

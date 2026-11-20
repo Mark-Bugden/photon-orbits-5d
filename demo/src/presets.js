@@ -3,8 +3,11 @@
 // Each sets the spins and momenta, and:
 // - span: the stretch of path drawn, as [from, to] in the angle variable χ, which is 0 at θ_min and grows by 2π
 //   each oscillation. The photon starts at `to`, and the trail reaches back to `from`.
-// - psi0: ψ at χ = 0, which sets the colours.
+// - psi0: ψ at χ = 0, which sets the colours and the side panel's ψ.
 // - view: the camera's [azimuth, elevation] in degrees, about the hole, with z up.
+// - lam0, phi0 (optional, 0 if left out): λ at the paper's λ = 0, and φ at χ = 0, so that the side panel's axes
+//   read as the paper's plots against λ. Only Figs 4.8 and 4.10 have them, from Figs 4.9 and 4.11. The 3D view
+//   needs no φ₀: it is in the camera's azimuth.
 //
 // The figures' spans, colours and viewpoints were fitted to the paper's images: the outline and equator ring give
 // the elevation, and the path's pixels and their colours the rest (docs/research/scripts/presets/). The fitted
@@ -22,8 +25,14 @@ export const PRESETS = [
   { name: 'Fig 4.5: the same, longer', a: 0.8, b: 0, Phi: 0, Psi: 0.5, span: [3.09, 170.017], psi0: 1.688, view: [254.9, 33.5] },
   { name: 'Fig 4.6: the “football”', a: 0, b: 0.99, Phi: 0, Psi: 0, span: [0, 4 * PI], psi0: 2.725, view: [21.2, 0] },
   { name: 'Fig 4.7: two spins, a band', a: 0.6, b: 0.3, Phi: 1, Psi: -1, span: [3.523, 136.789], psi0: 3.434, view: [303.8, 22.8] },
-  { name: 'Fig 4.8: cusps, extremal', a: 0.9, b: 0.1, Phi: 0.8, Psi: 0.8, span: [0, 33.696], psi0: 3.683, view: [104.1, 29.1] },
-  { name: 'Fig 4.10: φ and ψ turn back', a: 0.9, b: 0.09, Phi: 0.1, Psi: 0.01, span: [4.2418, 13.262], psi0: -0.0249, view: [117.1, 28.5] },
+  {
+    name: 'Fig 4.8: cusps, extremal', a: 0.9, b: 0.1, Phi: 0.8, Psi: 0.8, span: [0, 33.696], psi0: 3.683, view: [104.1, 29.1],
+    lam0: 0.076, phi0: 1.6122,
+  },
+  {
+    name: 'Fig 4.10: φ and ψ turn back', a: 0.9, b: 0.09, Phi: 0.1, Psi: 0.01, span: [4.2418, 13.262], psi0: -0.0249, view: [117.1, 28.5],
+    lam0: 0.7509, phi0: -1.5887,
+  },
   // Fig 4.12 is on the edge of the region, a circular orbit at θ = 45°: one turn of φ.
   { name: 'Fig 4.12: constant θ', a: 0.5, b: 0.25, Phi: -0.929241, Psi: 0.903667, span: [0, 9.8301], psi0: 1.099, view: [232, 32] },
   { name: 'Equal spins (a = b)', a: 0.4, b: 0.4, Phi: 1.2, Psi: -0.5, span: [0, 12 * PI], psi0: 0, view: DEFAULT_VIEW },
