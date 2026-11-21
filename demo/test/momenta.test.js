@@ -89,13 +89,12 @@ test('every fraction up to the edge is allowed, so the region is star-shaped as 
   }
 });
 
-test('every preset has an orbit, and the opening state is Fig 4.5 with three oscillations of trail', () => {
-  const petals = PRESETS.find((preset) => preset.name === OPENING.name);
-  assert.ok(petals.name.startsWith('Figs 4.4, 4.5'));
-  assert.deepEqual(petals.view, [254.9, 33.5]); // Fig 4.5's
-  assert.deepEqual({ ...OPENING, span: petals.span }, petals);
-  assert.ok(Math.abs(OPENING.span[1] - OPENING.span[0] - 6 * Math.PI) < 1e-12);
-  for (const preset of [...PRESETS, OPENING]) {
+test('every preset has an orbit, no preset names its figure, and the opening state is zero momenta', () => {
+  assert.equal(OPENING.name, 'Zero momenta');
+  assert.deepEqual([OPENING.Phi, OPENING.Psi], [0, 0]);
+  assert.ok(PRESETS.includes(OPENING));
+  for (const preset of PRESETS) {
+    assert.doesNotMatch(preset.name, /Fig/, preset.name);
     const { a, b, Phi, Psi, span, view } = preset;
     assert.ok(a + b <= 1 + 1e-12, preset.name);
     assert.ok(allowed(a, b, Phi, Psi), preset.name);

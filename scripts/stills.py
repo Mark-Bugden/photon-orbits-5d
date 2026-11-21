@@ -1,7 +1,7 @@
 """Renders the demo's still images from the built demo, in a real browser.
 
-- static.webp: the opening state, Fig 4.5's orbit with the side panel beside it, shown while the
-  demo loads and without JavaScript.
+- static.webp: the opening state, the zero momenta orbit with the side panel beside it, shown
+  while the demo loads and without JavaScript.
 - thumb.webp and og.jpg: the 3D view alone, on CARD's orbit and trail, at the default zoom, for the
   project card and link previews. The page's address ends in ?card, so the demo leaves out the spin
   arrow.
