@@ -185,7 +185,7 @@ function showStill() {
   const still = document.createElement('img');
   Object.assign(still, {
     src: new URL('static.webp', base).href,
-    alt: 'Title card reading \'Plotting the Photons: spherical photon orbits around a five-dimensional rotating black hole\', beside a drawing of a black disc circled by a ring.',
+    alt: 'A photon\'s path on its spheroid around a five-dimensional black hole, coloured by the fourth angle, ψ, beside plots of θ, φ and ψ against λ.',
     width: 1200,
     height: 675,
   });

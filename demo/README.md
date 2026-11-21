@@ -34,4 +34,4 @@ The files to edit:
 | `src/trail.js`, `src/colour.js` | The path ready to draw: `fill()` writes the 3D trail and `trace()` walks it for the panel. And the paper's colour wheel. `test/trail.test.js` checks them. |
 | `src/physics/` | The orbits: a port of the Python reference model in `../src/photon_orbits/`, explained in `../docs/equations.md`. Change both together and regenerate `../tests/fixtures/orbits.json`, which `test/physics.test.js` replays. |
 | `public/data/`, `public/model/` | Runtime files. |
-| `public/static.webp`, `thumb.webp`, `og.jpg` | Images. |
+| `public/static.webp`, `thumb.webp`, `og.jpg`, and the light versions `static-light.webp` and `thumb-light.webp` | The still images: the opening state, shown while the demo loads, and the project card and link preview, the Equal spins preset's orbit. `../scripts/stills.py` renders them from the built demo: run `npm run build`, then `uv run --with playwright --with pillow python scripts/stills.py` from the repo root, then build again. |
