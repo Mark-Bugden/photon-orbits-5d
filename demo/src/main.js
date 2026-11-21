@@ -38,7 +38,7 @@ const controls = {
   preset: select({
     label: 'Preset',
     options: [{ label: 'Custom', value: null }, ...PRESETS.map((preset) => ({ label: preset.name, value: preset }))],
-    value: PRESETS.find((preset) => preset.name === OPENING.name),
+    value: OPENING,
   }),
   spins: spins({ value: [OPENING.a, OPENING.b] }),
   momenta: pad({ spins: [OPENING.a, OPENING.b], value: [OPENING.Phi, OPENING.Psi] }),
@@ -47,6 +47,7 @@ const controls = {
     min: Math.log10(TRAIL[0]),
     max: Math.log10(TRAIL[1]),
     step: 0.01,
+    value: Math.log10(TRAIL[0]),
     format: (value) => `λ ${Math.round(10 ** value)}`,
   }),
 };
@@ -58,7 +59,7 @@ const viewSize = { width: 0, height: 0 }; // of the 3D view, beside the panel
 let current = null; // { key, orbit, table, path, … }, or { key, orbit, … } with no path when there is no orbit
 let lam = 0; // the photon's λ
 let chi = 0; // and its χ, which keeps its place in the oscillation when the orbit changes
-let length = 0; // the trail's, in λ: the opening's exactly, until the slider (which rounds it) moves
+let length = TRAIL[0]; // the trail's, in λ: the shortest, to begin with (Mark, 2026-11-21)
 let start = OPENING; // the preset last chosen: where Reset puts the photon back
 // The origins of ψ, φ and λ, which are arbitrary: a preset's, fitted to its figure, or 0 once the state is custom.
 let psi0 = OPENING.psi0; // ψ at χ = 0, which sets the colours and the panel's ψ
@@ -219,8 +220,6 @@ function build() {
 }
 
 apply(OPENING);
-length = lam - lamAt(current.path, OPENING.span[0]);
-controls.trail.value = Math.log10(length);
 try {
   build();
 } catch (error) {
