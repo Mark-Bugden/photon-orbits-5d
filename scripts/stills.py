@@ -3,7 +3,8 @@
 - static.webp: the opening state, Fig 4.5's orbit with the side panel beside it, shown while the
   demo loads and without JavaScript.
 - thumb.webp and og.jpg: the 3D view alone, on CARD's orbit and trail, at the default zoom, for the
-  project card and link previews.
+  project card and link previews. The page's address ends in ?card, so the demo leaves out the spin
+  arrow.
 - static-light.webp and thumb-light.webp: the same in the light theme, which the site shows under
   its light theme. og.jpg stays dark only: link previews have no theme.
 
@@ -45,7 +46,7 @@ STILL_STYLE = (
     "[data-demo] .dk-stage { height: auto !important; aspect-ratio: var(--still-shape, 16 / 9) !important; }"
     " [data-demo] .po-view-buttons { display: none !important; }"
 )
-# The card: the 3D view alone, without the side panel or the colour key.
+# The card: the 3D view alone, without the side panel or the colour key. ?card leaves out the spin arrow.
 CARD_STYLE = "[data-demo] .po-panel, [data-demo] .po-legend { display: none !important; }"
 
 
@@ -117,7 +118,7 @@ def main():
         page.close()
 
         # The card: CARD's orbit and trail.
-        page, more = open_page(browser, url, CARD_STYLE)
+        page, more = open_page(browser, url + "?card", CARD_STYLE)
         errors += more
         page.get_by_label("Preset").select_option(label=CARD["preset"])
         page.get_by_label("Trail length").evaluate(

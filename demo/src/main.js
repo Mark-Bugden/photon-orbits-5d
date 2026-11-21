@@ -27,6 +27,9 @@ const TRAIL = [3, 300]; // the trail's length in λ, from about one oscillation 
 const EXTREMAL = 'Extremal: a + b = 1. The inner and outer horizons have merged, and the hole spins as fast as a black hole of its mass can.';
 const HELD = 'a + b stops at 1, where the hole is extremal: its inner and outer horizons have merged. Beyond that, it would have no horizon.';
 const EDGE = (name) => `${name} stops at the edge of the shaded region: past it, no spherical orbit has these momenta.`;
+// With ?card in its address, the demo leaves out the spin arrow below the spheroid, for the project card's still
+// (scripts/stills.py).
+const CARD = new URLSearchParams(globalThis.location?.search).has('card');
 
 const signed = (value) => `${value < 0 ? '−' : '+'}${Math.abs(value).toFixed(2)}`;
 const degrees = (radians) => ((180 / Math.PI) * radians).toFixed(1);
@@ -117,10 +120,10 @@ function apply(preset) {
   note = extremal(a, b) ? EXTREMAL : '';
 }
 
-// Shapes the 3D view for the current orbit, and shows each spin's arrow while that spin is non-zero: a's above the
+// Shapes the 3D view for the current orbit, and shows each spin's arrow while that spin is non-zero: a's below the
 // spheroid, and b's round the colour wheel.
 function shape(a, b) {
-  view.setShape(current.orbitAxes, current.horizonAxes, a > 0);
+  view.setShape(current.orbitAxes, current.horizonAxes, a > 0 && !CARD);
   legend.setSpin(b > 0);
 }
 
