@@ -2,7 +2,7 @@
 
 - static.webp: the opening state, Fig 4.5's orbit with the side panel beside it, shown while the
   demo loads and without JavaScript.
-- thumb.webp and og.jpg: the 3D view alone, zoomed in one step, on CARD's orbit and trail, for the
+- thumb.webp and og.jpg: the 3D view alone, on CARD's orbit and trail, at the default zoom, for the
   project card and link previews.
 - static-light.webp and thumb-light.webp: the same in the light theme, which the site shows under
   its light theme. og.jpg stays dark only: link previews have no theme.
@@ -35,7 +35,7 @@ OUT = ROOT / "demo" / "public"
 THEMES = ("dark", "light")
 BACKGROUND = {"dark": (10, 14, 20), "light": (245, 246, 248)}  # --color-bg in each theme
 # The card's orbit: a preset, by its name in the drop-down, and the trail's length in λ.
-CARD = {"preset": "Fig 4.10: φ and ψ turn back", "trail": 60}
+CARD = {"preset": "Equal spins (a = b)", "trail": 100}
 # Wide enough for the side panel to sit beside the 3D view; the stage is then about 860 px wide.
 VIEWPORT = {"width": 1200, "height": 1000}
 SCALE = 2
@@ -116,7 +116,7 @@ def main():
         opening = shoot(page)
         page.close()
 
-        # The card: CARD's orbit and trail, zoomed in one step from the default.
+        # The card: CARD's orbit and trail.
         page, more = open_page(browser, url, CARD_STYLE)
         errors += more
         page.get_by_label("Preset").select_option(label=CARD["preset"])
@@ -124,8 +124,6 @@ def main():
             "(el, value) => { el.value = value; el.dispatchEvent(new Event('input', { bubbles: true })); }",
             math.log10(CARD["trail"]),
         )
-        page.locator("canvas.po-canvas").press("+")
-        page.evaluate("document.activeElement.blur()")  # no focus ring in the still
         card = shoot(page)
         page.evaluate("document.documentElement.style.setProperty('--still-shape', '1200 / 630')")
         og = shoot(page, ("dark",))["dark"]
