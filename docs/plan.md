@@ -1,6 +1,6 @@
 # Plan: Plotting the Photons
 
-This is the plan for building this project's interactive demo for mark-bugden.github.io. Claude wrote it on 2026-11-20 from two research reports, and Mark settled its decisions the same day (see "Decisions" at the end). The site's requirements are in `site-contract-photon-orbits-5d.md`, which lives outside this repo, and in the [demo-kit README](https://github.com/Mark-Bugden/demo-kit#readme). This document covers what we build on top of them.
+This is the plan for building this project's interactive demo for mark-bugden.com (mark-bugden.github.io until 2026-11-21). Claude wrote it on 2026-11-20 from two research reports, and Mark settled its decisions the same day (see "Decisions" at the end). The site's requirements are in `site-contract-photon-orbits-5d.md`, which lives outside this repo, and in the [demo-kit README](https://github.com/Mark-Bugden/demo-kit#readme). This document covers what we build on top of them.
 
 The research behind it:
 
@@ -194,7 +194,7 @@ pyproject.toml         a uv project; commit uv.lock
 - [x] Mark settled the decisions (2026-11-20).
 - [x] Kit v0.5.0 and the new title. The stub's title card, `static.webp`, `thumb.webp` and `og.jpg`, now reads "Plotting the Photons", redrawn in the original's font. Demo version 0.1.2.
 - [x] Mark merges the PR, which releases v0.1.2, still a stub.
-- [ ] Mark updates the title in the site's write-up, `content/projects/photon-orbits-5d.md` in Mark-Bugden.github.io, which still says "Circling the Sphere".
+- [x] Mark updates the title in the site's write-up, `content/projects/photon-orbits-5d.md` in Mark-Bugden.github.io, which still says "Circling the Sphere".
 
 ### 1. Physics core (PR). Gate: Mark reviews the equations before any drawing
 - [x] Set up the uv project, and turn `research/scripts/mp5d.py` and `reference_impl.py` into the Python reference module, with the two guards from "The physics". pytest covers:
@@ -286,16 +286,17 @@ pyproject.toml         a uv project; commit uv.lock
 
 Mark set the status to `live` on 2026-11-21, in `v1.0.0`, ahead of the rest of this milestone.
 
-- [ ] **Accessibility:**
-  - every control works from the keyboard;
+- [ ] **Accessibility.** Mark left the rest of this out (2026-11-21). Already done: every control, the pad and the 3D view work from the keyboard, and under reduced motion the photon starts paused (the kit) and the camera doesn't glide.
   - a live text description of the orbit;
-  - reduced motion;
   - colour-blind checks with DevTools emulation;
   - contrast.
-- [ ] **Performance on a phone,** with no console errors.
-- [ ] **Stills** from the demo, with `scripts/stills.py` and Playwright: `static`, `thumb` and `og`, plus the optional light versions.
-- [ ] **Manifest:** summary, tags, `about` in Mark's wording, and `built`. The status is `live` since `v1.0.0` (Mark, 2026-11-21).
-- [ ] **Site:** Mark writes the write-up.
+- [x] **On a phone** (Mark, 2026-11-21).
+- [x] **Stills** from the demo, in both themes, with `scripts/stills.py` and Playwright (Mark, 2026-11-21: light and dark should show the same thing). v1.0.1.
+  - `static.webp` and `static-light.webp`: the opening state, the 3D view and the side panel, as a visitor first sees them, without the zoom buttons.
+  - `thumb.webp`, `thumb-light.webp` and `og.jpg`: the 3D view alone, zoomed in one step, without the colour key, on Fig 4.10's orbit with a trail of λ = 60. It is one of the paper's figures, and its strands stay distinct at the card's size, about 380 px wide. `og.jpg` is dark only: link previews have no theme.
+  - The demo starts paused under reduced motion, so every still is of the same moment, and the two themes show the same thing.
+- [x] **Manifest.** The tags stay as they are (Mark, 2026-11-21), and the release sets `built`. There is no `about`: the site's project page now has a "More info" tab with Mark's write-up, and the frame would show "How this works" under the demo, repeating it. The status is `live` since `v1.0.0` (Mark, 2026-11-21).
+- [x] **Site:** Mark wrote the write-up, as questions that open, on the project page's "More info" tab (2026-11-21). Checked in Edge on the live site: opened on "More info", then switched to "Demo", the 3D view and the side panel come up at their full size, with no console errors.
 
 ### Later (stretch, new work)
 - **Resonance hunt.**
@@ -329,6 +330,7 @@ Settled with Mark on 2026-11-20. The comparison page, <https://claude.ai/artifac
 | Which way the hole turns | An arrow below the spheroid for a, where it is out of the paths' way, and one round the colour wheel for b, whose turning shows only in ψ (after step 4). |
 | The side panel's φ and ψ | From 0 to 2π, as on the torus, rather than unwrapped (after step 4). |
 | A custom orbit's colours | ψ = 0, red, at θ_min, so Ψ = 0 orbits at b = 0 are red, as in pictures of Kerr orbits (after step 4). |
+| The still images | The same picture in both themes (Mark). The card and link preview show Fig 4.10's orbit with a trail of λ = 60, which Claude chose (step 5). |
 
 ## Risks
 

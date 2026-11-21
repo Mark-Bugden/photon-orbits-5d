@@ -1,12 +1,12 @@
 # Plotting the Photons
 
-An interactive demo of spherical photon orbits around a five-dimensional rotating (Myers–Perry) black hole, for [mark-bugden.github.io](https://mark-bugden.github.io/). It is based on the paper:
+An interactive demo of spherical photon orbits around a five-dimensional rotating (Myers–Perry) black hole, for [mark-bugden.com](https://mark-bugden.com/projects/photon-orbits-5d/). It is based on the paper:
 
 > M. Bugden, "Spherical photon orbits around a 5D Myers-Perry black hole", *General Relativity and Gravitation* **50** (2018), [doi:10.1007/s10714-018-2352-x](https://doi.org/10.1007/s10714-018-2352-x), [arXiv:1801.03389](https://arxiv.org/abs/1801.03389).
 
 The visitor sets the hole's two spins, $a$ and $b$, and picks the photon's two angular momenta, $\Phi$ and $\Psi$, on a pad that shows which pairs have a spherical orbit. The demo then draws the orbit on its spheroid, with the fourth dimension, $\psi$, shown as colour.
 
-**Status:** milestones 1 to 4 of [the plan](docs/plan.md) are done: the physics, whose equations are set out in [docs/equations.md](docs/equations.md), the 3D view, the momentum pad with presets for the paper's figures, and the side panel, which plots θ, φ and ψ against λ and the path on the (φ, ψ) torus. Polish and the 1.0 release come next, in milestone 5.
+**Status:** milestones 1 to 4 of [the plan](docs/plan.md) are done: the physics, whose equations are set out in [docs/equations.md](docs/equations.md), the 3D view, the momentum pad with presets for the paper's figures, and the side panel, which plots θ, φ and ψ against λ and the path on the (φ, ψ) torus. The demo is live, since v1.0.0, and milestone 5's polish is under way.
 
 ## Repository layout
 
@@ -15,6 +15,7 @@ The visitor sets the hole's two spins, $a$ and $b$, and picks the photon's two a
 | [`demo/`](demo/) | The interactive demo, built with [demo-kit](https://github.com/Mark-Bugden/demo-kit). [`demo/src/physics/`](demo/src/physics/) is the JavaScript port of the reference model, and [`demo/src/scene/`](demo/src/scene/) the 3D view, drawn with [three.js](https://threejs.org/). Its README explains how to run and build the demo. |
 | [`src/photon_orbits/`](src/photon_orbits/) | Python: the reference model of the orbits, which the demo's physics is a port of. |
 | [`tests/`](tests/) | Python tests, and `fixtures/orbits.json`: reference results that the demo's physics must reproduce. |
+| [`scripts/stills.py`](scripts/stills.py) | Renders the demo's still images, in both themes, from the built demo in a real browser. |
 | [`docs/`](docs/) | [The plan](docs/plan.md), [the equations as implemented](docs/equations.md), and [the research](docs/research/) behind them: a line-by-line review of the paper with its errata, and a survey of existing tools. |
 
 ## The reference model
