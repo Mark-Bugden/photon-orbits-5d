@@ -282,7 +282,10 @@ pyproject.toml         a uv project; commit uv.lock
 - [x] **The side panel's φ and ψ run from 0 to 2π,** as on the torus (Mark, 2026-11-20: the shifting axes were confusing). This replaces step 4's unwrapped rows, each fitted to its stretch. Where a curve passes a multiple of 2π, it leaves at one edge of its row and comes back at the other. θ does too through both the pole and the equator, where it grows by π each oscillation, so every row's axis is fixed. The ticks are fractions of π on every row.
 - [x] Checked in Edge, with no console errors: both themes; Figs 4.2, 4.3, 4.5, 4.6, 4.7, 4.8, 4.10 and 4.12; zooming in, then choosing a preset; "Reset view"; the longest trail, which keeps its length through presets.
 
-### 5. Polish and release (PR, then release `v1.0.0`)
+### 5. Polish (PRs)
+
+Mark set the status to `live` on 2026-11-21, in `v1.0.0`, ahead of the rest of this milestone.
+
 - [ ] **Accessibility:**
   - every control works from the keyboard;
   - a live text description of the orbit;
@@ -291,7 +294,7 @@ pyproject.toml         a uv project; commit uv.lock
   - contrast.
 - [ ] **Performance on a phone,** with no console errors.
 - [ ] **Stills** from the demo, with `scripts/stills.py` and Playwright: `static`, `thumb` and `og`, plus the optional light versions.
-- [ ] **Manifest:** summary, tags, `about` in Mark's wording, and `built`. Mark decides when the status becomes `live`.
+- [ ] **Manifest:** summary, tags, `about` in Mark's wording, and `built`. The status is `live` since `v1.0.0` (Mark, 2026-11-21).
 - [ ] **Site:** Mark writes the write-up.
 
 ### Later (stretch, new work)
