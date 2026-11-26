@@ -1,4 +1,4 @@
-# Plan: Plotting the Photons
+# Plan: Tracing the Trajectories
 
 This is the plan for building this project's interactive demo for mark-bugden.com (mark-bugden.github.io until 2026-11-21). Claude wrote it on 2026-11-20 from two research reports, and Mark settled its decisions the same day (see "Decisions" at the end). The site's requirements are in `site-contract-photon-orbits-5d.md`, which lives outside this repo, and in the [demo-kit README](https://github.com/Mark-Bugden/demo-kit#readme). This document covers what we build on top of them.
 
@@ -314,7 +314,7 @@ Settled with Mark on 2026-11-20. The comparison page, <https://claude.ai/artifac
 
 | Question | Decision |
 | --- | --- |
-| Title | "Plotting the Photons". The slug stays `photon-orbits-5d`. |
+| Title | "Tracing the Trajectories" (Mark, 2026-11-26; "Plotting the Photons" until then). The slug stays `photon-orbits-5d`. |
 | Choosing the momenta | The pad, with two fine sliders under it. |
 | Colour wheel | The paper's wheel, as in Fig 4.1. |
 | Special cases | The paper's way: Φ = 0 orbits pass through the pole, and Ψ = 0 orbits cross the equator. |
