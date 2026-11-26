@@ -232,6 +232,11 @@ export function pad({ spins: [a0, b0], value: [Phi0, Psi0] }) {
     ring = canvas.matches(':focus-visible');
     if (ring) {
       ctx.lineWidth = 2;
+      // Under the ring, a halo of the pad's background reaching 2px past it, so the ring clears 3:1 on any tint.
+      ctx.fillStyle = colour('--color-bg');
+      ctx.beginPath();
+      ctx.arc(x, y, 14, 0, 2 * Math.PI);
+      ctx.fill();
       ctx.strokeStyle = colour('--color-focus');
       ctx.beginPath();
       ctx.arc(x, y, 11, 0, 2 * Math.PI);
