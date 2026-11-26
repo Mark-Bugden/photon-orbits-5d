@@ -97,10 +97,11 @@ export function pad({ spins: [a0, b0], value: [Phi0, Psi0] }) {
     if (Phi === 0 && Psi === 0) change([0, 0]);
     else change(toRegion(...spins, Phi, Psi));
   }
+  // The browser focuses the canvas on a press, as it does any element: a script's focus() would count as
+  // :focus-visible in Chromium, and show the focus ring after a click.
   canvas.addEventListener('pointerdown', (event) => {
     if (el.hasAttribute('data-disabled') || event.button !== 0) return;
     canvas.setPointerCapture(event.pointerId);
-    canvas.focus({ preventScroll: true });
     drag(event);
   });
   canvas.addEventListener('pointermove', (event) => {
@@ -116,6 +117,12 @@ export function pad({ spins: [a0, b0], value: [Phi0, Psi0] }) {
     // Round to the step, so the keys land on the sliders' values, and on 0.
     const target = value.map((v, i) => Math.round((v + move[i] * step) / STEP) * STEP);
     change(clampAlong(...spins, value, [move[0] ? target[0] : value[0], move[1] ? target[1] : value[1]]));
+  });
+  // The focus ring shows while the canvas matches :focus-visible, as the kit's outlines do: after Tab, not after a
+  // press. A key can turn :focus-visible on, so each key redraws if the ring should change.
+  let ring = false;
+  canvas.addEventListener('keydown', () => {
+    if (canvas.matches(':focus-visible') !== ring) draw();
   });
   canvas.addEventListener('focus', () => draw());
   canvas.addEventListener('blur', () => draw());
@@ -222,7 +229,8 @@ export function pad({ spins: [a0, b0], value: [Phi0, Psi0] }) {
 
     // The dot.
     const [x, y] = [X(value[0]), Y(value[1])];
-    if (document.activeElement === canvas) {
+    ring = canvas.matches(':focus-visible');
+    if (ring) {
       ctx.lineWidth = 2;
       ctx.strokeStyle = colour('--color-focus');
       ctx.beginPath();
