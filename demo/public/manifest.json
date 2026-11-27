@@ -1,6 +1,6 @@
 {
   "slug": "photon-orbits-5d",
-  "title": "Plotting the Photons",
+  "title": "Tracing the Trajectories",
   "tagline": "Light orbiting a five-dimensional rotating black hole.",
   "summary": "Spherical photon orbits around a five-dimensional rotating (Myers-Perry) black hole: paths of light that stay at a fixed coordinate radius, are not confined to a plane, and can behave quasiperiodically. Based on the paper \"Spherical Photon Orbits around a 5D Myers-Perry Black Hole\" (General Relativity and Gravitation, 2018).",
   "tags": ["general relativity", "black holes", "geodesics"],

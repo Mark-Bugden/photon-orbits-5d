@@ -1,4 +1,4 @@
-# Plotting the Photons
+# Tracing the Trajectories
 
 An interactive demo of spherical photon orbits around a five-dimensional rotating (Myers–Perry) black hole, for [mark-bugden.com](https://mark-bugden.com/projects/photon-orbits-5d/). It is based on the paper:
 

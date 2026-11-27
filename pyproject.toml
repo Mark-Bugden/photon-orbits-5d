@@ -1,7 +1,7 @@
 [project]
 name = "photon-orbits"
 version = "0.1.0"
-description = "Reference model of spherical photon orbits around a 5D Myers-Perry black hole, for the Plotting the Photons demo."
+description = "Reference model of spherical photon orbits around a 5D Myers-Perry black hole, for the Tracing the Trajectories demo."
 readme = "README.md"
 license = "MIT"
 authors = [{ name = "Mark Bugden" }]
